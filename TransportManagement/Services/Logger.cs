@@ -142,6 +142,7 @@ namespace TransportManagement
             ConfigurationManager.RefreshSection("appSettings");
         }
 
+
         private static void UpdateTraceListeners(string oldDirectory)
         {
             if (Trace.Listeners.Count == 3)
@@ -203,7 +204,7 @@ namespace TransportManagement
 
             if(string.IsNullOrEmpty(logDirectory))
             {
-                logDirectory = filesystem.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);   
+                logDirectory = AppDomain.CurrentDomain.BaseDirectory; //This is the way to get the durectory where the executable is located.
             }
 
             if(String.IsNullOrEmpty(logFileName))

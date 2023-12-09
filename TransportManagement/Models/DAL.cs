@@ -29,13 +29,27 @@ namespace TransportManagement.Models
                 Port = ConfigurationManager.AppSettings["Port"];
                 Password = ConfigurationManager.AppSettings["Password"];
                 DatabaseName = ConfigurationManager.AppSettings["DatabaseName"];
+                
+                if(Server == null || User == null || Port == null || Password == null || DatabaseName == null) 
+                {
+                    throw new Exception("Could not retrieve the information about the database for establishing connection!!"); 
+                }
             }
 
             catch (Exception ex) 
             {
-                
-            }
-            
+                Logger.Log(ex.Message, LogLevel.Fatal);
+                throw; 
+            }   
         }
+
+        //Populate the connection string to establish connection to the database. 
+        public string ConnectionString()
+        {
+            string connectionString = $"server={Server};user={User}; port={Port};password={Password};database={DatabaseName}";
+            return connectionString;
+        }
+
+
     }
 }
