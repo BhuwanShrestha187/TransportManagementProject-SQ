@@ -23,5 +23,23 @@ namespace TransportManagement
         {
             InitializeComponent();
         }
+
+        private void LoginPage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void loginButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

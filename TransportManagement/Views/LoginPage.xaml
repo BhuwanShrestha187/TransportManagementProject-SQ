@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportManagement"
         mc:Ignorable="d"
-        Title="LoginPage" Height="450" Width="800">
+        Title="LoginPage" Height="450" Width="380"
+        Background="Azure" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
-        
+        <StackPanel>
+            <Image Source="..\banner.png"/>
+            <Button x:Name="closeButton" Content="X" Foreground="White" Width="35" Margin="345,-160,0,424" Background="Black" FontFamily="Lucida Sans Unicode" FontWeight="Bold" FontSize="18" BorderThickness="0" Click="closeButton_Click"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 110 0 0">
+            <Label Content="Enter your Username:" />
+            <TextBox x:Name="usernameTextBox" Height="30" Width="170" Margin="0 2 0 0"/>
+            <Label Content="Enter your Password"/>
+            <TextBox x:Name="passwordTextBox" Height="30" Width="170" Margin="0 2 0 0"/>
+
+            <Button x:Name="loginButton" Content="LOG IN" Margin="0 20 0 0" Width="90" Foreground="White" FontWeight="Bold" Height="30" Background="Black" Click="loginButton_Click"/>
+        </StackPanel>
     </Grid>
 </Window>
