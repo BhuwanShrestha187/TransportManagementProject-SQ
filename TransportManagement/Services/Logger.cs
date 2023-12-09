@@ -45,7 +45,7 @@ namespace TransportManagement
             if (string.IsNullOrEmpty(filename))
             {
                 //If filename is not given then by default give it a name
-                filename = "TMSLog.log";
+                filename = "TMSLogFile.log";
             }
 
             string logPath = Path.Combine(logDirectory, filename); //Combine both to make a complete path
@@ -161,7 +161,7 @@ namespace TransportManagement
         /*
          * Move the log file to the new directory
          */
-        private static void MoveLogFileInNewDirectory(string oldDirectory, string newDirectory)
+        public static void MoveLogFileInNewDirectory(string oldDirectory, string newDirectory)
         {
             try
             {
@@ -195,6 +195,24 @@ namespace TransportManagement
         /*
          * Get the current directory of the log
          */ 
+
+        public static string GetCurrentLogDirectory()
+        {
+            string logDirectory = ConfigurationManager.AppSettings["LogDirectory"];
+            string logFileName = ConfigurationManager.AppSettings["LogFileName"]; 
+
+            if(string.IsNullOrEmpty(logDirectory))
+            {
+                logDirectory = filesystem.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);   
+            }
+
+            if(String.IsNullOrEmpty(logFileName))
+            {
+                logFileName = "TMSLogFile.log"; 
+            }
+
+            return filesystem.Path.Combine(logDirectory, logFileName);
+        }
 
     }
 }
