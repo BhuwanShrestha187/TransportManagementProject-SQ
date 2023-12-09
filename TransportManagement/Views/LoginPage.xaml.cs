@@ -23,6 +23,7 @@ namespace TransportManagement
         public LoginPage()
         {
             InitializeComponent();
+            Logger.Log("Application Started", LogLevel.Information);
         }
 
         private void LoginPage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -47,7 +48,28 @@ namespace TransportManagement
          */
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            string userType = CheckUserData();  //This will hold the type of the User : Admin, Buyer or Planner
+            string loginResult = CheckUserData();  //This will hold the type of the User : Admin, Buyer or Planner
+            if (loginResult != null)
+            {
+                // loginResult is not null, user type is valid
+                // go to the page of selected user type
+                if (loginResult.Contains("Buyer"))
+                {
+                    BuyerPage buyer = new BuyerPage();
+                    buyer.Show();
+                }
+                else if (loginResult.Contains("Planner"))
+                {
+                    PlannerPage planner = new PlannerPage();
+                    planner.Show();
+                }
+                else if (loginResult.Contains("Admin"))
+                {
+                    AdminPage admin = new AdminPage();
+                    admin.Show();
+                }
+                App.Current.MainWindow.Hide();
+            }
         }
 
         /*
@@ -56,10 +78,37 @@ namespace TransportManagement
         private string CheckUserData()
         {
             //Our Models is responsible to PLAY with the data in MVC. So, create one class in Model called DAL (Data Access Layer)
-            DAL dal = new DAL();
+            DAL credentialCheck = new DAL();
+            if(usernameTextBox.Text == "" || passwordTextBox.Text == "")
+            {
+                MessageBox.Show("Please provide the username and password!!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null; 
+            }
+            else
+            {
+                if(credentialCheck.CheckUserName(usernameTextBox.Text) == false)
+                {
+                    //USername is not in the database
+                    MessageBox.Show("Username doesnot exist in the system!!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
 
+                if(credentialCheck.CheckUserPassword(usernameTextBox.Text,  passwordTextBox.Text) == false)
+                {
+                    //Password is incorrect
+                    MessageBox.Show("Incorrect Password!! Please Try again!!");
+                    return null; 
+                }
+            }
 
-          
+            string userType = credentialCheck.GetUserType(usernameTextBox.Text);
+            return userType;     
         }
+
+
+
+
+
+
     }
 }

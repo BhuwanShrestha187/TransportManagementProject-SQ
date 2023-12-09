@@ -9,6 +9,12 @@ using MySql.Data.MySqlClient;
 
 namespace TransportManagement.Models
 {
+    public enum UserRole
+    {
+        Buyer,
+        Planner,
+        Admin
+    }
     public class DAL
     {
         //The main purpose of the DAL is to play with the database. So declare the interaction tools at first
@@ -20,37 +26,70 @@ namespace TransportManagement.Models
 
         public DAL() 
         {
-            
+            LoadConnectionString();
         }
 
+        public void UpdateDatabaseConnectionString(string fieldToChange, string newData)
+        {
+            List<string> availableFields = new List<string> { "Server", "User", "Port", "Password", "DatabaseName" };
+
+            if (!availableFields.Contains(fieldToChange))
+            {
+                throw new KeyNotFoundException($"Error. We couldn't find any field called {fieldToChange} in the database connection string.");
+            }
+
+            string oldData = ConfigurationManager.AppSettings.Get(fieldToChange);
+
+            // If the value doesn't change, don't do anything
+            if (oldData == newData)
+            {
+                return;
+            }
+
+            // Update the config file
+            var configMap = new ExeConfigurationFileMap { ExeConfigFilename = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile };
+            var config = ConfigurationManager.OpenMappedExeConfiguration(configMap, ConfigurationUserLevel.None);
+
+            config.AppSettings.Settings[fieldToChange].Value = newData;
+
+            config.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection("appSettings");
+
+            Logger.Log($"{fieldToChange} database connection string changed from {oldData} to {newData}", LogLevel.Information);
+
+            LoadConnectionString();
+        }
         private void LoadConnectionString()
         {
             try
             {
-                Server = ConfigurationManager.AppSettings["Server"];
-                User = ConfigurationManager.AppSettings["User"];
-                Port = ConfigurationManager.AppSettings["Port"];
-                Password = ConfigurationManager.AppSettings["Password"];
-                DatabaseName = ConfigurationManager.AppSettings["DatabaseName"];
-                
-                if(Server == null || User == null || Port == null || Password == null || DatabaseName == null) 
+                Server = ConfigurationManager.AppSettings.Get("Server");
+                User = ConfigurationManager.AppSettings.Get("User");
+                Port = ConfigurationManager.AppSettings.Get("Port");
+                Password = ConfigurationManager.AppSettings.Get("Password");
+                DatabaseName = ConfigurationManager.AppSettings.Get("DatabaseName");
+
+                if (Server == "" || User == "" || Port == "" || Password == "" || DatabaseName == "")
                 {
-                    throw new Exception("Could not retrieve the information about the database for establishing connection!!"); 
+                    throw new Exception("We couldn't retrieve the information about the database. Please check your config file.");
                 }
             }
 
             catch (Exception ex) 
             {
-                Logger.Log(ex.Message, LogLevel.Fatal);
+                Logger.Log(ex.Message, LogLevel.Critical);
                 throw; 
             }   
         }
 
+       
+
+
         //Populate the connection string to establish connection to the database. 
         public string ConnectionString()
         {
-            string connectionString = $"server={Server};user={User}; port={Port};password={Password};database={DatabaseName}";
-            return connectionString;
+            return $"server={Server};user={User};database={DatabaseName};port={Port};password={Password}; convert zero datetime=True";
+
         }
 
         /*
@@ -60,11 +99,10 @@ namespace TransportManagement.Models
         {
             bool existingUser = false;
             using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
-            {
-                if (conn == null)
-                {
-                    conn.Open();
-                }
+            {         
+                conn.Open();
+                Logger.Log("Connected to the SQL" ,LogLevel.Information);
+                
                 try
                 {
                     string query = $"SELECT * FROM Users WHERE Username='{username}'"; //Query to send to the database
@@ -80,7 +118,7 @@ namespace TransportManagement.Models
                             if(username == usernameDB)
                             {
                                 existingUser = true;
-                                break; 
+                              
                             }
                         }
                     }
@@ -93,9 +131,9 @@ namespace TransportManagement.Models
                 }
 
                 conn.Close(); 
-                return existingUser;
+                
             }
-            
+            return existingUser;
         }
 
 
@@ -103,31 +141,32 @@ namespace TransportManagement.Models
          * Check password is valid or not. 
          */
 
-        public bool CheckUserPassword(string password)
+        public bool CheckUserPassword(string username, string password)
         {
             bool isValid = false;
             using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
             {
-                if (conn == null)
-                {
+               
                     conn.Open();
-                }
+
+                Logger.Log("Connected to the SQL", LogLevel.Information);
+
                 try
                 {
-                    string query = $"SELECT * FROM Users WHERE Username='{password}'"; //Query to send to the database
+                    string query = $"SELECT * FROM Users WHERE Username='{username}'"; //Query to send to the database
                     MySqlCommand cmd = new MySqlCommand(query, conn);                   //Command
                     MySqlDataReader rdr = cmd.ExecuteReader();                          // Reading data fromthe databaase
 
                     //If there is data in the database
                     if (rdr.HasRows)
                     {
-                        while (rdr.Read())
+                        while ((rdr.Read()))
                         {
                             string passwordDB = rdr["Password"].ToString();
                             if (password == passwordDB)
                             {
                                 isValid = true;
-                                break;
+                                
                             }
                         }
                     }
@@ -140,8 +179,9 @@ namespace TransportManagement.Models
                 }
 
                 conn.Close();
-                return isValid;
+          
             }
+            return isValid;
         }
 
 
@@ -155,13 +195,14 @@ namespace TransportManagement.Models
             string userType = null; 
             using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
             {
-                if (conn == null)
-                {
+
+               
                     conn.Open();
-                }
+                Logger.Log("Connected to the SQL", LogLevel.Information);
+
                 try
                 {
-                    string query = $"SELECT * FROM Users WHERE Username='{username}'"; //Query to send to the database
+                    string query = $"SELECT UserType FROM Users WHERE Username='{username}'"; //Query to send to the database
                     MySqlCommand cmd = new MySqlCommand(query, conn);                   //Command
                     MySqlDataReader rdr = cmd.ExecuteReader();                          // Reading data fromthe databaase
 
@@ -183,9 +224,7 @@ namespace TransportManagement.Models
 
                                 case 2:
                                     userType = "Admin";
-                                    break;
-
-                                default: break;            
+                                    break;           
                             }
                         }
                     }
@@ -198,8 +237,9 @@ namespace TransportManagement.Models
                 }
 
                 conn.Close();
-                return userType;
+               
             }
+            return userType;
         }
 
 

@@ -10,210 +10,172 @@ using System.Diagnostics;
 using Serilog;
 using Serilog.Events;
 using System.IO.Abstractions;
-using System.Xml.Serialization;
-using System.IO.IsolatedStorage;
 
 namespace TransportManagement
 {
-    public enum LogLevel //To determine the loglevel
-    { 
-        Verbose, Debug, Information, Warning, Error, Fatal
-    };
+    // Enum to convert into log titles
+    public enum LogLevel
+    {
+        Trace, Debug, Information, Warning, Error, Critical
+    }
     public class Logger
     {
-        private static bool isSetup = false; //used to track whether the logger has been set up. This prevents unnecessary repeated setup attempts.
-        private static ILogger logger;  //It holds the instance of Serilog logger. 
-        private static readonly IFileSystem filesystem = new FileSystem(); // It is a interface in Serilog.Sinks.IO It is used for file-based logging. 
+        private static bool isSetup = false;
+        private static ILogger logger;
+        private static readonly IFileSystem fileSystem = new FileSystem();
 
-        /*
-         * Configure and initialize the Serilog logger. It checks for Configuration Setting related to the log directory
-           and filename using ConfigurationManager. If these are provided then it sets the directory and filename for the log. 
-           
-         */
-
-        private static void LogSetup()
+        //To set up the log class if it is not set up already
+        private static void Setup()
         {
             string logDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
-            string filename = ConfigurationManager.AppSettings["LogFileName"];
+            string logFileName = ConfigurationManager.AppSettings.Get("LogFileName");
 
-            if (string.IsNullOrEmpty(logDirectory))  //If logPath is  empty
+            if ((string.IsNullOrEmpty(logDirectory)))
             {
-                //If directory is not given, then this line selects the current directory of the application i.e inside the Debug Folder
                 logDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             }
 
-            if (string.IsNullOrEmpty(filename))
+            if ((string.IsNullOrEmpty(logFileName)))
             {
-                //If filename is not given then by default give it a name
-                filename = "TMSLogFile.log";
+                logFileName = "TMSLogfile.log";
             }
 
-            string logPath = Path.Combine(logDirectory, filename); //Combine both to make a complete path
+            string logFilePath = Path.Combine(logDirectory, logFileName);
             logger = new LoggerConfiguration()
-                .WriteTo.File(logPath, rollingInterval: RollingInterval.Day).CreateLogger();
-            // RolllingInterval.Day indicates that the new logfile should be created daily.
+           .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
+            .CreateLogger();
         }
 
-        /*
-         * This function is a utility method for logging messages using Serilog.
-         * message: The actual log message that I want to record
-         * level: The log level indicating the severity of the message. 
-         */
-
+        //Check if the logger is set up, if not, set it up. Call the writing function
         public static void Log(string message, LogLevel level)
         {
             if (logger == null)
             {
-                LogSetup();
+                Setup();
             }
-
             switch (level)
             {
-                case LogLevel.Verbose:
+                case LogLevel.Trace:
                     logger.Verbose(message);
                     break;
-
                 case LogLevel.Debug:
                     logger.Debug(message);
                     break;
-
+                case LogLevel.Information:
+                    logger.Information(message);
+                    break;
                 case LogLevel.Warning:
                     logger.Warning(message);
                     break;
                 case LogLevel.Error:
                     logger.Error(message);
                     break;
-                case LogLevel.Fatal:
+                case LogLevel.Critical:
                     logger.Fatal(message);
                     break;
-
-                default:
-                    break;
             }
         }
 
-
-        /*
-         * Admin Functionality: Can change the log Directory. 
-         */
-
-        public static int ChangeLogDirectory(string newLogDirectory)
+        //Change the directory of the log file
+        public static int ChangeLogDirectory(string newDirectory)
         {
-            try
+            string oldDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
+
+            if (oldDirectory == newDirectory)
             {
-                string oldDirectory = ConfigurationManager.AppSettings["LogDirectory"];
-                if (oldDirectory == newLogDirectory)
-                {
-                    return 0;
-                }
-
-                UpdateConfiguration(newLogDirectory);
-                if (isSetup)
-                {
-                    Logger.Log($"Log Directroy changed from \"{oldDirectory}\" to \"{newLogDirectory}\"", LogLevel.Information);
-                    UpdateTraceListeners(oldDirectory);
-                    isSetup = false;
-                }
-
-                MoveLogFileInNewDirectory(oldDirectory, newLogDirectory);
-
-                if (!isSetup)
-                {
-                    LogSetup();
-                }
-
-                return 0; //Success
+                return 0;
             }
 
-            catch (Exception e)
-            {
-                HandleError(e);
-                return 1; //Failure
-            }
-        }
-
-
-        //To update the new directory in the config file
-        private static void UpdateConfiguration(string newDirectory)
-        {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             configuration.AppSettings.Settings["LogDirectory"].Value = newDirectory;
             configuration.Save(ConfigurationSaveMode.Full, true);
             ConfigurationManager.RefreshSection("appSettings");
-        }
 
-
-        private static void UpdateTraceListeners(string oldDirectory)
-        {
-            if (Trace.Listeners.Count == 3)
-                Trace.Listeners.Remove(Trace.Listeners[2]);
-        }
-
-        private static void HandleError(Exception e)
-        {
-            Logger.Log($"Failed to change the log directory. {e.Message}", LogLevel.Error);
-
-            //Revert the changes in the configuration
-            string oldDirectory = ConfigurationManager.AppSettings["LogDirectory"];
-            UpdateConfiguration(oldDirectory);
-        }
-
-
-        /*
-         * Move the log file to the new directory
-         */
-        public static void MoveLogFileInNewDirectory(string oldDirectory, string newDirectory)
-        {
             try
             {
-                //Get the log filename in the old Directory
-                string logFilename = ConfigurationManager.AppSettings["LogFileName"];
-
-                //Combine newDirectory with filename
-                string newFilePath = Path.Combine(newDirectory, logFilename);
-
-                //Check if the log file exists
-                if(File.Exists(logFilename))
+                if (isSetup)
                 {
-                    if(!Directory.Exists(newFilePath))
+                    Logger.Log($"Log directory changed from \"{oldDirectory}\" to \"{newDirectory}\"", LogLevel.Information);
+
+                    if (Trace.Listeners.Count == 3)
                     {
-                        Directory.CreateDirectory(newFilePath);
+                        Trace.Listeners.Remove(Trace.Listeners[2]);
                     }
+
+                    isSetup = false;
                 }
 
-            
-                File.Move(logFilename, newFilePath);
-            }
+                UpdateLogFileInNewDirectory(oldDirectory, newDirectory);
 
-            catch(Exception e)
-            {
-                Logger.Log($"Error MOving the log file: {e}", LogLevel.Error);
+                if (!isSetup)
+                {
+                    Setup();
+                }
+
+                return 0;
             }
-            
+            catch (Exception e)
+            {
+                Logger.Log($"We couldn't change the log directory. {e.Message}", LogLevel.Error);
+
+                configuration.AppSettings.Settings["LogDirectory"].Value = oldDirectory;
+                configuration.Save(ConfigurationSaveMode.Full, true);
+                ConfigurationManager.RefreshSection("appSettings");
+                return 1;
+            }
         }
 
+        //Move the log file to the new directory
+        public static void UpdateLogFileInNewDirectory(string oldDirectory, string newDirectory)
+        {
+            string logFileName = ConfigurationManager.AppSettings.Get("LogFileName");
+            string oldPath = fileSystem.Path.Combine(oldDirectory, logFileName);
+            string newPath = fileSystem.Path.Combine(newDirectory, logFileName);
 
-        /*
-         * Get the current directory of the log
-         */ 
+            try
+            {
+                if (!fileSystem.Directory.Exists(newDirectory))
+                {
+                    fileSystem.Directory.CreateDirectory(newDirectory);
+                }
 
+                if (fileSystem.File.Exists(oldPath))
+                {
+                    fileSystem.File.Copy(oldPath, newPath, true);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            if (isSetup)
+            {
+                Logger.Log($"Log file {logFileName} was moved from \"{oldDirectory}\" to \"{newDirectory}\"", LogLevel.Information);
+            }
+        }
+
+        //Get the current directory of the log
         public static string GetCurrentLogDirectory()
         {
-            string logDirectory = ConfigurationManager.AppSettings["LogDirectory"];
-            string logFileName = ConfigurationManager.AppSettings["LogFileName"]; 
+            string logDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
+            string logFileName = ConfigurationManager.AppSettings.Get("LogFileName");
 
-            if(string.IsNullOrEmpty(logDirectory))
+            if (string.IsNullOrEmpty(logDirectory))
             {
-                logDirectory = AppDomain.CurrentDomain.BaseDirectory; //This is the way to get the durectory where the executable is located.
+                logDirectory = fileSystem.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             }
 
-            if(String.IsNullOrEmpty(logFileName))
+            if (string.IsNullOrEmpty(logFileName))
             {
-                logFileName = "TMSLogFile.log"; 
+                logFileName = "TMSLogfile.log";
             }
 
-            return filesystem.Path.Combine(logDirectory, logFileName);
+            return fileSystem.Path.Combine(logDirectory, logFileName);
         }
 
+
     }
+
+
 }
