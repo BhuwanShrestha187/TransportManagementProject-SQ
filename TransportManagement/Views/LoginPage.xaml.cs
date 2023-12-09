@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TransportManagement.Models;
 
 namespace TransportManagement
 {
@@ -49,12 +50,16 @@ namespace TransportManagement
             string userType = CheckUserData();  //This will hold the type of the User : Admin, Buyer or Planner
         }
 
+        /*
+         * Checks the username or password is correct or not.
+         */
         private string CheckUserData()
         {
             //Our Models is responsible to PLAY with the data in MVC. So, create one class in Model called DAL (Data Access Layer)
+            DAL dal = new DAL();
 
-            string userType;
-            return userType;
+
+          
         }
     }
 }
