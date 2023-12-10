@@ -74,9 +74,17 @@ namespace TransportManagement
             return carriers;
         }
 
-        public void DeleteCarrier(Carrier carrier)
+        public bool DeleteCarrier(Carrier carrier)
         {
-            dal.DeleteCarrierFromSystem(carrier); 
+            bool deleted = false; 
+            deleted = dal.DeleteCarrierFromSystem(carrier);
+            return deleted;
+        }
+
+        public int GetCarrierIDByName(string carrierName)
+        {
+            int carrierID = dal.GetCarrierIDByName(carrierName);
+            return carrierID; 
         }
     }
 }

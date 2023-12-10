@@ -325,11 +325,28 @@ namespace TransportManagement
         {
             //Load the selected carrier  at first
             Carrier carrier = (Carrier)CarrierDatabaseList.SelectedItem;
+            
+            //If only the carrier is selected
             if(CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 0)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show($"Are you sure you want to delete {carrier.Name} carrier ?", "Sure?", MessageBoxButton.YesNo); 
                 if(result == MessageBoxResult.Yes)
                 {
+                    bool carrierDeleted = admin.DeleteCarrier(carrier); 
+                    if(carrierDeleted == true)
+                    {
+                        PopulateCarrierCitiesList(sender, e);
+                        CityDatabase.ItemsSource = new List<CarrierCity>();
+                        System.Windows.MessageBox.Show($"{carrier.Name} was deleted successfully from the system", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+
+                else if(CarrierDatabaseList.SelectedItems.Count == 0 && CarrierDatabaseList.SelectedItems.Count == 1)
+                {
+                    CarrierCity carrierCity = (CarrierCity)CityDatabase.SelectedItem; 
+                    carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name); 
+
+                    
                     
                 }
             }
@@ -337,7 +354,7 @@ namespace TransportManagement
 
         private void updateButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e)

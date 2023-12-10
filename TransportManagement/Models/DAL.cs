@@ -477,8 +477,9 @@ namespace TransportManagement
          * DELETE carriers from the system. 
          */
 
-        public void DeleteCarrierFromSystem(Carrier carrier)
+        public bool DeleteCarrierFromSystem(Carrier carrier)
         {
+            bool deleted = false; 
             string query = "DELETE FROM Carriers WHERE CarrierName=@CarrierName"; 
 
             try
@@ -495,6 +496,7 @@ namespace TransportManagement
                         {
                             //The carrier with the specified name has been deleted
                             Logger.Log($"Successfully delete the carrier: {carrier.Name}", LogLevel.Information); 
+                            deleted = true;
                         }
                     }
                 }
@@ -504,6 +506,40 @@ namespace TransportManagement
             {
                 Logger.Log($"Error while deleting the carrier: {carrier.Name}", LogLevel.Error); 
             }
+            return deleted;
+        }
+
+
+        /*
+         * From the database, fetch the carrierID by name
+         */
+
+        public int GetCarrierIDByName (string name)
+        {
+            string query = "SELECT CarrierID FROM Carriers WHERE CarrierName=@CarrierName";
+            try
+            {
+                using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+                    using(MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CarrierName", name);
+                        object result = cmd.ExecuteScalar(); 
+                        if(result != null && result != DBNull.Value)
+                        {
+                            return Convert.ToInt32(result); 
+                        }
+                    }
+                }
+            }
+
+            catch(Exception e )
+            {
+                Logger.Log($"Cannot extract the CarrierID by Name. {e.Message}", LogLevel.Error);
+            }
+
+            return -1; //Indicates failure
         }
 
 
