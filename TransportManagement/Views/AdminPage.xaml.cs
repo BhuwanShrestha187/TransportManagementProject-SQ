@@ -134,13 +134,14 @@ namespace TransportManagement
             ResetUI(); 
             manageDataButton.Background = Brushes.LightSkyBlue;
             manageDataGrid.Visibility = Visibility.Visible;
-            
-
         }
 
         private void rateButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ResetManageButtonUI();
+            updateRateGrid.Visibility = Visibility.Visible;
+            rateButton.Background = Brushes.LightSkyBlue;
+            
         }
 
         private void carrierButton_Click(object sender, RoutedEventArgs e)
@@ -163,7 +164,18 @@ namespace TransportManagement
 
         }
 
-        // -------------------------------- Manage Button finished ----------------------------------
+        private void ResetManageButtonUI()
+        {
+            rateButton.Background = Brushes.WhiteSmoke; 
+            carrierButton.Background = Brushes.WhiteSmoke;
+            routeButton.Background = Brushes.WhiteSmoke;
+
+            //For the related UI as well
+            updateRateGrid.Visibility = Visibility.Hidden; 
+            
+        }
+
+        // *********************************************** Manage Button finished *************************************************************
         private void backupButton_Click(object sender, RoutedEventArgs e)
         {
 
