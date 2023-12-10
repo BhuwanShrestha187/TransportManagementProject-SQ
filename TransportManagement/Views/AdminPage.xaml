@@ -5,8 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportManagement"
         mc:Ignorable="d"
-        Title="AdminPage" Height="450" Width="800">
+        Title="AdminPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
+        WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         
+        <StackPanel VerticalAlignment="Top" Grid.Row="0" >
+            <Image Source="..\fullbanner.jpg" Height="144" Width="849"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <Button x:Name="generalConfigButton" Content="General Config"  Height="45" FontSize="16" BorderThickness="0" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Margin="0 40 0 0" Click="generalConfigButton_Click"/>
+                <Button x:Name="logFileButton"  Content="Log File" Height="45" FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Margin="0 15 0 0" Click="logFileButton_Click"/>
+                <Button x:Name="manageDataButton" Content="Manage Data" Height="45" FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Margin="0 15 0 0" Click="manageDataButton_Click"/>
+                <Button x:Name="backupButton" Content="Back Up" Height="45" FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Margin="0 15 0 0" Click="backupButton_Click"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Background="Black"/>
+
+            <Grid x:Name="generalConfigGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+                <Label Content="CONFIGURE DATABASE" FontWeight="Bold"  FontSize="15"/>
+                <Label Content="Server" FontSize="15" Margin="10 40 0 0 "/>
+                <TextBox x:Name="serverTextBox" Margin="40 -192 0 0" Height="20" Width="420"/>
+                <Label Content="Port" FontSize="15" Margin="10, 75, 0 0"/>
+                <TextBox x:Name="portTextBox" Margin="-180 -125 0 0" Height="20" Width="200"/>
+                <Label Content="User" FontSize="15" Margin="10 110 0 0"/>
+                <TextBox x:Name="userTextBox" Height="20" Width="200" Margin="-180 -57 0 0"/>
+                <Label Content="Password" FontSize="15" Margin="10, 140 0 0"/>
+                <TextBox x:Name="passwordTextBox" Height="20" Width="200" Margin="-180 5 0 0"/>
+                <Label Content="Database" FontSize="15" Margin="10 170 0 0"/>
+                <TextBox x:Name="databaseTextBox" Height="20" Width="200" Margin="-180 65 0 0"/>
+                <Button x:Name="updateDatabaseButton" Content="Update" Height="20" Width="100" Margin="0 130 0 0" Click="updateDatabaseButton_Click"/>
+
+                <!-- Logfile Configuraion -->
+                <Label Content="CONFIGURE LOGFILE" FontWeight="Bold" FontSize="15" Margin="0 230 0 0"/>
+                <Label Content="Log Path: " Margin="0 260 0 0" FontSize="15"/>
+                <TextBox x:Name="logPathTextBox" Width="350" Height="20" Margin="-140 245 0 0"/>
+                <Button x:Name="selectPathButton" Height="20" Width="80" Content="Select Path" Margin="310 245 0 0 " Click="selectPathButton_Click"/>
+                <Button x:Name="updateLogPathButton" Height="20" Width="80" Content="Update" Margin="480 245 0 0 " Click="updateLogPathButton_Click"/>
+
+
+
+            </Grid>
+        </Grid>
+
+       
+
+
     </Grid>
+
 </Window>

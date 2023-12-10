@@ -7,7 +7,7 @@ using System.Configuration;
 using System.Security.Policy;
 using MySql.Data.MySqlClient; 
 
-namespace TransportManagement.Models
+namespace TransportManagement
 {
     public enum UserRole
     {
@@ -149,7 +149,7 @@ namespace TransportManagement.Models
                
                     conn.Open();
 
-                Logger.Log("Connected to the SQL", LogLevel.Information);
+                
 
                 try
                 {
@@ -195,11 +195,7 @@ namespace TransportManagement.Models
             string userType = null; 
             using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
             {
-
-               
-                    conn.Open();
-                Logger.Log("Connected to the SQL", LogLevel.Information);
-
+                 conn.Open();     
                 try
                 {
                     string query = $"SELECT UserType FROM Users WHERE Username='{username}'"; //Query to send to the database

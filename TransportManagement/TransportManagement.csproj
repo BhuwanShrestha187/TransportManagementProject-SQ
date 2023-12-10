@@ -192,5 +192,8 @@
   <ItemGroup>
     <Resource Include="banner.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="fullbanner.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

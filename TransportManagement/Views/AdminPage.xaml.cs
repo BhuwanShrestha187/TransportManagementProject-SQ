@@ -23,5 +23,52 @@ namespace TransportManagement
         {
             InitializeComponent();
         }
+
+        //When user drags the window
+        private void LoginPage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+        private void ResetUI()
+        {
+
+        }
+        private void generalConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void logFileButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void manageDataButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void backupButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void updateDatabaseButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void selectPathButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void updateLogPathButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
