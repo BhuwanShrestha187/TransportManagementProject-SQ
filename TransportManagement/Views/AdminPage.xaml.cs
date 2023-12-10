@@ -75,10 +75,12 @@ namespace TransportManagement
         {
             generalConfigGrid.Visibility = Visibility.Hidden; 
             logFileGrid.Visibility = Visibility.Hidden;
+            manageDataGrid.Visibility = Visibility.Hidden;
 
             //Clear Background also
             logFileButton.Background = Brushes.WhiteSmoke;
             generalConfigButton.Background = Brushes.WhiteSmoke;
+            manageDataButton.Background = Brushes.WhiteSmoke;
         }
 
         /*
@@ -124,11 +126,44 @@ namespace TransportManagement
             }
         }
 
+        /*
+         * ------------------- WOrking with the manageData ButtonCLick from here -----------------------
+         */
         private void manageDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetUI(); 
+            manageDataButton.Background = Brushes.LightSkyBlue;
+            manageDataGrid.Visibility = Visibility.Visible;
+            
+
+        }
+
+        private void rateButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
+        private void carrierButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void routeButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ftlUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ftlUpdateButton_Copy_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        // -------------------------------- Manage Button finished ----------------------------------
         private void backupButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -226,7 +261,7 @@ namespace TransportManagement
             if(result == 0)
             {
                 System.Windows.MessageBox.Show("Log Path changed successfully.", "Logpath Updated", MessageBoxButton.OK, MessageBoxImage.Information);
-                Logger.Log($"Changed Log directroy from --{oldPath}-- to --{newPath}--", LogLevel.Information);
+                Logger.Log($"Changed Log directroy from \"{oldPath}\" to \"{newPath}\"", LogLevel.Information);
             }
 
             else
@@ -236,6 +271,6 @@ namespace TransportManagement
             }
         }
 
-       
+        
     }
 }

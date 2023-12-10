@@ -56,11 +56,38 @@
                 <Button x:Name="updateLogPathButton" Height="20" Width="80" Content="Update" Margin="480 245 0 0 " Click="updateLogPathButton_Click"/>
             </Grid>
 
-            <Grid x:Name="logFileGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+            <Grid x:Name="logFileGrid" Grid.Column="3" Visibility="Hidden" Margin="10 0 0 0" Background="WhiteSmoke">
                 <TextBox x:Name="logFileContentsTextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Background="White" Margin=" 15"/>
             </Grid>
-                
+
+            <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Button x:Name="rateButton" Content="Update Rate"  FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Width="100" HorizontalAlignment="Left" Margin="10 10 0 0" Click="rateButton_Click"/>
+                    <Button x:Name="carrierButton" Content="Update Carrier"  FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Width="100" HorizontalAlignment="Left" Margin="120 10 0 0" Click="carrierButton_Click"/>
+                    <Button x:Name="routeButton" Content="Update Route"  FontSize="16" FontWeight="Bold" BorderThickness="0"  FontFamily="Bahnschrift SemiCondensed" Width="100" HorizontalAlignment="Left" Margin="230 10 0 0" Click="routeButton_Click"/>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="10">
+                    <Grid x:Name="updateRateGrid">
+                        <Label Content="Current FTL Rate: " FontSize="16" Height="101" VerticalAlignment="Top" Margin="0,1,0,0" ></Label>
+                        <TextBox x:Name="rateTextBox" Height="25" BorderThickness="1" Margin="143,5,316,208" />
+                        <TextBox x:Name="rateTextBox_Copy" Height="25" BorderThickness="1" Margin="143,50,316,163" />
+                        <Label Content="Current LTL Rate: " FontSize="16" Margin="0,46,502,163" />
+
+                        <Button x:Name="ftlUpdateButton" Content="Update" Height="25" Width="80" Margin="324,5,228,208" Click="ftlUpdateButton_Click"/>
+                        <Button x:Name="ftlUpdateButton_Copy" Content="Update" Height="25" Width="80" Margin="324,50,228,163" Click="ftlUpdateButton_Copy_Click"/>
+
+
+                    </Grid>
+                </Grid>
             </Grid>
+
+        </Grid>
 
 
 
