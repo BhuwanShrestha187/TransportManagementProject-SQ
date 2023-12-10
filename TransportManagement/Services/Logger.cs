@@ -42,7 +42,7 @@ namespace TransportManagement
 
             string logFilePath = Path.Combine(logDirectory, logFileName);
             logger = new LoggerConfiguration()
-           .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day)
+           .WriteTo.File(logFilePath)
             .CreateLogger();
         }
 

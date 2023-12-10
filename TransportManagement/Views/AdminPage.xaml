@@ -34,7 +34,7 @@
             </StackPanel>
             <StackPanel Grid.Column="2" Background="Black"/>
 
-            <Grid x:Name="generalConfigGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+            <Grid x:Name="generalConfigGrid" Grid.Column="3" Visibility="Hidden" Margin="10 0 0 0" Background="WhiteSmoke">
                 <Label Content="CONFIGURE DATABASE" FontWeight="Bold"  FontSize="15"/>
                 <Label Content="Server" FontSize="15" Margin="10 40 0 0 "/>
                 <TextBox x:Name="serverTextBox" Margin="40 -192 0 0" Height="20" Width="420"/>
@@ -54,11 +54,13 @@
                 <TextBox x:Name="logPathTextBox" Width="350" Height="20" Margin="-140 245 0 0"/>
                 <Button x:Name="selectPathButton" Height="20" Width="80" Content="Select Path" Margin="310 245 0 0 " Click="selectPathButton_Click"/>
                 <Button x:Name="updateLogPathButton" Height="20" Width="80" Content="Update" Margin="480 245 0 0 " Click="updateLogPathButton_Click"/>
-
-
-
             </Grid>
-        </Grid>
+
+            <Grid x:Name="logFileGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+                <TextBox x:Name="logFileContentsTextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Background="White" Margin=" 15"/>
+            </Grid>
+                
+            </Grid>
 
 
 

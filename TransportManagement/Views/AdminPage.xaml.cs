@@ -13,8 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient; 
-
+using MySql.Data.MySqlClient;
+using System.IO;
 namespace TransportManagement
 {
     /// <summary>
@@ -74,6 +74,11 @@ namespace TransportManagement
         private void ResetUI()
         {
             generalConfigGrid.Visibility = Visibility.Hidden; 
+            logFileGrid.Visibility = Visibility.Hidden;
+
+            //Clear Background also
+            logFileButton.Background = Brushes.WhiteSmoke;
+            generalConfigButton.Background = Brushes.WhiteSmoke;
         }
 
         /*
@@ -86,12 +91,37 @@ namespace TransportManagement
         private void generalConfigButton_Click(object sender, RoutedEventArgs e)
         {
             ResetUI();
-            generalConfigGrid.Visibility = Visibility.Visible;
+            StartUpGrid();
         }
 
         private void logFileButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
+            logFileGrid.Visibility = Visibility.Visible;
+            logFileButton.Background = Brushes.LightSkyBlue;
+            try
+            {
+                string logFilePath = Logger.GetCurrentLogDirectory();
+                StringBuilder logContent = new StringBuilder();
 
+                using(StreamReader sr = new StreamReader(logFilePath))
+                {
+                    string line; 
+                    while((line = sr.ReadLine()) != null)
+                    {
+                        logContent.AppendLine(line);
+                        
+                    }
+                }
+
+                logFileContentsTextBlock.Text = logContent.ToString();  
+            }
+
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show("Error accessing the log file: " + Logger.GetCurrentLogDirectory()); 
+                return;
+            }
         }
 
         private void manageDataButton_Click(object sender, RoutedEventArgs e)
