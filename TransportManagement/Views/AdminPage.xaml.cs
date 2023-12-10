@@ -79,11 +79,13 @@ namespace TransportManagement
             generalConfigGrid.Visibility = Visibility.Hidden; 
             logFileGrid.Visibility = Visibility.Hidden;
             manageDataGrid.Visibility = Visibility.Hidden;
+         
 
             //Clear Background also
             logFileButton.Background = Brushes.WhiteSmoke;
             generalConfigButton.Background = Brushes.WhiteSmoke;
             manageDataButton.Background = Brushes.WhiteSmoke;
+            
         }
 
         /*
@@ -137,6 +139,8 @@ namespace TransportManagement
             ResetUI(); 
             manageDataButton.Background = Brushes.LightSkyBlue;
             manageDataGrid.Visibility = Visibility.Visible;
+            updateRateGrid.Visibility = Visibility.Visible;
+            rateButton.Background = Brushes.LightSkyBlue;
             DisplayRates();
         }
 
@@ -152,6 +156,11 @@ namespace TransportManagement
         {
             //For the related UI as well
             updateRateGrid.Visibility = Visibility.Hidden;
+            updateCarrierGrid.Visibility = Visibility.Hidden;
+
+            //For Button background
+            rateButton.Background = Brushes.WhiteSmoke;
+            carrierButton.Background = Brushes.WhiteSmoke;
 
         }
         private void DisplayRates()
@@ -216,19 +225,33 @@ namespace TransportManagement
                 System.Windows.MessageBox.Show("Invalid rate format. Please enter a valid currency value.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        //***** From  here update Carrier ******
+
         private void carrierButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetManageButtonUI();
+            carrierButton.Background = Brushes.LightSkyBlue;
+            updateCarrierGrid.Visibility = Visibility.Visible;
+        }
+
+        private void CarriersFieldsHandler(object sender, SelectionChangedEventArgs e)
         {
 
         }
+      
+         
 
+      
         private void routeButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-       
-
      
+
+
+
 
         // *********************************************** Manage Button finished *************************************************************
         private void backupButton_Click(object sender, RoutedEventArgs e)
@@ -338,6 +361,7 @@ namespace TransportManagement
             }
         }
 
-        
+
+       
     }
 }
