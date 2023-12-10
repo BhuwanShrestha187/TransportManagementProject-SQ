@@ -12,9 +12,10 @@
             <RowDefinition Height="140"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel VerticalAlignment="Top" Grid.Row="0" >
-            <Image Source="..\fullbanner.jpg" Height="144" Width="849"/>
+            <Image Source="..\fullbanner.jpg" Height="145" Width="879"/>
+            <Button x:Name="closeButton" Content="X" Foreground="White" VerticalAlignment="Top" Width="30" Margin="770 -148 0 0" BorderThickness="0" Background="Black" FontSize="17" FontWeight="Bold" Click="closeButton_Click"/>
         </StackPanel>
 
         <Grid Grid.Row="1">
@@ -59,7 +60,7 @@
             </Grid>
         </Grid>
 
-       
+
 
 
     </Grid>
