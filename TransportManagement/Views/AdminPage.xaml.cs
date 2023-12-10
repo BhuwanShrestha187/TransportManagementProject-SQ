@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.IO;
+using System.Globalization; 
 namespace TransportManagement
 {
     /// <summary>
@@ -23,9 +24,11 @@ namespace TransportManagement
     public partial class AdminPage : Window
     {
        private readonly Admin admin = new Admin();
+        DAL dal = new DAL();
         public AdminPage()
         {
             InitializeComponent();
+            dal.LoadConnectionString();
             ResetUI();
             StartUpGrid();
         }
@@ -134,16 +137,85 @@ namespace TransportManagement
             ResetUI(); 
             manageDataButton.Background = Brushes.LightSkyBlue;
             manageDataGrid.Visibility = Visibility.Visible;
+            DisplayRates();
         }
 
-        private void rateButton_Click(object sender, RoutedEventArgs e)
+        private void  rateButton_Click(object sender, RoutedEventArgs e)
         {
             ResetManageButtonUI();
             updateRateGrid.Visibility = Visibility.Visible;
             rateButton.Background = Brushes.LightSkyBlue;
-            
+            DisplayRates(); 
         }
 
+        private void ResetManageButtonUI()
+        {
+            //For the related UI as well
+            updateRateGrid.Visibility = Visibility.Hidden;
+
+        }
+        private void DisplayRates()
+        {
+            try
+            {
+                double ftlRate = admin.GetFTLRate();
+                double ltlRate = admin.GetLTLRate();
+            }
+
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Cant fetch the rates!!" + ex.Message);
+                throw;
+            }
+
+            ftlRateTextBox.Text = admin.GetFTLRate().ToString("C2", CultureInfo.CurrentCulture);
+            ltlRateTextBox.Text = admin.GetLTLRate().ToString("C2", CultureInfo.CurrentCulture);
+        }
+
+
+        private void ftlUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (double.TryParse(ftlRateTextBox.Text, NumberStyles.Currency, CultureInfo.CurrentCulture, out double newRate))
+            {
+                // Use the parsed value to update the database
+                bool result = admin.UpdateFTLRate(newRate); 
+                if(result == true)
+                {
+                    System.Windows.MessageBox.Show("Rates updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                else
+                {
+                    System.Windows.MessageBox.Show("Rates can't ne updated!!", "Success", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Invalid rate format. Please enter a valid currency value.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ltlUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (double.TryParse(ltlRateTextBox.Text, NumberStyles.Currency, CultureInfo.CurrentCulture, out double newRate))
+            {
+                // Use the parsed value to update the database
+                bool result = admin.UpdateLTLRate(newRate);
+                if (result == true)
+                {
+                    System.Windows.MessageBox.Show("Rates updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                else
+                {
+                    System.Windows.MessageBox.Show("Rates can't ne updated!!", "Success", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Invalid rate format. Please enter a valid currency value.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void carrierButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -154,26 +226,9 @@ namespace TransportManagement
 
         }
 
-        private void ftlUpdateButton_Click(object sender, RoutedEventArgs e)
-        {
+       
 
-        }
-
-        private void ftlUpdateButton_Copy_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ResetManageButtonUI()
-        {
-            rateButton.Background = Brushes.WhiteSmoke; 
-            carrierButton.Background = Brushes.WhiteSmoke;
-            routeButton.Background = Brushes.WhiteSmoke;
-
-            //For the related UI as well
-            updateRateGrid.Visibility = Visibility.Hidden; 
-            
-        }
+     
 
         // *********************************************** Manage Button finished *************************************************************
         private void backupButton_Click(object sender, RoutedEventArgs e)

@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Security.Policy;
-using MySql.Data.MySqlClient; 
+using MySql.Data.MySqlClient;
+using System.Linq.Expressions;
 
 namespace TransportManagement
 {
@@ -59,7 +60,7 @@ namespace TransportManagement
 
             LoadConnectionString();
         }
-        private void LoadConnectionString()
+        public void LoadConnectionString()
         {
             try
             {
@@ -239,6 +240,136 @@ namespace TransportManagement
         }
 
 
+        //******************************* Working with the Rates ******************************************
+        public double GetCurrentFTLRate()
+        {
+            double ftlRate = 0.0;
+            string query = $"SELECT FTLRate FROM Rates";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+            {
+                conn.Open();
+                try
+                {
+                    using(MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        MySqlDataReader rdr = cmd.ExecuteReader(); 
+                        if(rdr.HasRows)
+                        {
+                            while(rdr.Read())
+                            {
+                                ftlRate = Convert.ToDouble(rdr["FTLRate"]); 
+                            }
+                        }
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Cannot retrieve the FTLRate value: " + ex.Message, LogLevel.Error);
+                    throw;
+                }
+                
+
+            }
+
+            return ftlRate;
+        }
+
+        public double GetCurrentLTLRate()
+        {
+            double ltlRate = 0.0;
+            string query = $"SELECT LTLRate FROM Rates";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+            {
+                conn.Open();
+                try
+                {
+                   
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        MySqlDataReader rdr = cmd.ExecuteReader();
+                        if (rdr.HasRows)
+                        {
+                            while (rdr.Read())
+                            {
+                                ltlRate = Convert.ToDouble(rdr["LTLRate"]);
+                            }
+                        }
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Cannot retrieve the LTLRate value: " + ex.Message, LogLevel.Error);
+                    throw;
+                }
+                
+
+            }
+
+            return ltlRate;
+        }
+
+
+        /*
+         * Updates the rates in the database. 
+         */
+
+        public bool UpdateFTLRate(double newFTLRate)
+        {
+            string query = "UPDATE Rates SET FTLRate=@FTLRate";
+            bool result = false; 
+            using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+            {
+                conn.Open();
+                using(MySqlCommand cmd = new MySqlCommand( query, conn))
+                {
+                    //Add the parameters to the command
+                    try
+                    {
+                        cmd.Parameters.AddWithValue("@FTLRate", newFTLRate);
+                        cmd.ExecuteNonQuery();
+                        result = true; 
+                    }
+
+                    catch(Exception ex)
+                    {
+                        Logger.Log("Unable to update the FTLRates in the rate table." + ex.Message , LogLevel.Error);
+                        throw; 
+                    }
+                }
+            }
+            return result;
+        }
+
+        public bool UpdateLTLRate(double newLTLRate)
+        {
+            string query = "UPDATE Rates SET LTLRate=@LTLRate";
+            bool result = false;
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    //Add the parameters to the command
+                    try
+                    {
+                        cmd.Parameters.AddWithValue("@LTLRate", newLTLRate);
+                        cmd.ExecuteNonQuery();
+                        result = true;
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Logger.Log("Unable to update the LTLRates in the rate table." + ex.Message, LogLevel.Error);
+                        throw;
+                    }
+                }
+            }
+            return result;
+        }
 
 
 

@@ -75,12 +75,12 @@
                 <Grid Grid.Row="1" Margin="10">
                     <Grid x:Name="updateRateGrid">
                         <Label Content="Current FTL Rate: " FontSize="16" Height="101" VerticalAlignment="Top" Margin="0,1,0,0" ></Label>
-                        <TextBox x:Name="rateTextBox" Height="25" BorderThickness="1" Margin="143,5,316,208" />
-                        <TextBox x:Name="rateTextBox_Copy" Height="25" BorderThickness="1" Margin="143,50,316,163" />
+                        <TextBox x:Name="ftlRateTextBox" Height="25" BorderThickness="1" Margin="143,5,316,208" />
+                        <TextBox x:Name="ltlRateTextBox" Height="25" BorderThickness="1" Margin="143,50,316,163" />
                         <Label Content="Current LTL Rate: " FontSize="16" Margin="0,46,502,163" />
 
                         <Button x:Name="ftlUpdateButton" Content="Update" Height="25" Width="80" Margin="324,5,228,208" Click="ftlUpdateButton_Click"/>
-                        <Button x:Name="ftlUpdateButton_Copy" Content="Update" Height="25" Width="80" Margin="324,50,228,163" Click="ftlUpdateButton_Copy_Click"/>
+                        <Button x:Name="ltlUpdateButton" Content="Update" Height="25" Width="80" Margin="324,50,228,163" Click="ltlUpdateButton_Click"/>
 
 
                     </Grid>
