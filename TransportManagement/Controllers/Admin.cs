@@ -59,5 +59,24 @@ namespace TransportManagement
         {
             return dal.UpdateLTLRate(newFTLRate);
         }
+
+
+        //************************** related to the carrier ******************************
+        public List<CarrierCity> GetCitiesByCarrier(string carrierName)
+        {
+            List<CarrierCity> carrierCities = dal.FilterCitiesByCarrier(carrierName);
+            Logger.Log("Fetched CarrierCities", LogLevel.Information);
+            return carrierCities;
+        }
+        public List<Carrier> FetchCarriers()
+        {
+            List<Carrier> carriers = dal.GetAllCarriers();
+            return carriers;
+        }
+
+        public void DeleteCarrier(Carrier carrier)
+        {
+            dal.DeleteCarrierFromSystem(carrier); 
+        }
     }
 }

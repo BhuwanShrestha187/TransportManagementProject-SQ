@@ -129,7 +129,10 @@
     </Compile>
     <Compile Include="Controllers\Admin.cs" />
     <Compile Include="Models\Carrier.cs" />
+    <Compile Include="Models\CarrierCity.cs" />
+    <Compile Include="Models\Contract.cs" />
     <Compile Include="Models\DAL.cs" />
+    <Compile Include="Models\Trip.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Views\AdminPage.xaml.cs">
       <DependentUpon>AdminPage.xaml</DependentUpon>

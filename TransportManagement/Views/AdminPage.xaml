@@ -84,10 +84,10 @@
                     </Grid>
 
                     <Grid x:Name="updateCarrierGrid" Visibility="Visible">
-                        <Button x:Name="clearButton" Content="ClearAll" Width="60" Height="20" Margin="18,145,554,73"/>
-                        <Button x:Name="updateButton" Content="Update" Width="60" Height="20" Margin="18,191,554,27"/>
-                        <Button x:Name="addButton" Content="Add" Width="60" Height="20" Margin="18,215,554,3" RenderTransformOrigin="-0.429,0.868"/>
-                        <Button x:Name="deleteButton" Content="Delete" Width="60" Height="20" Margin="18,168,554,50"/>
+                        <Button x:Name="clearButton" Content="ClearAll" Width="60" Height="20" Margin="18,145,554,73" Click="clearButton_Click"/>
+                        <Button x:Name="updateButton" Content="Update" Width="60" Height="20" Margin="18,191,554,27" Click="updateButton_Click"/>
+                        <Button x:Name="addButton" Content="Add" Width="60" Height="20" Margin="18,215,554,3" RenderTransformOrigin="-0.429,0.868" Click="addButton_Click"/>
+                        <Button x:Name="deleteButton" Content="Delete" Width="60" Height="20" Margin="18,168,554,50" Click="deleteButton_Click"/>
 
                         <Label Content="Name" Margin="81,140,507,75"/>
                         <Label Content="FTL Rate" Margin="82,162,493,53"/>
@@ -122,12 +122,12 @@
                             </ListView.View>
                         </ListView>
 
-                        <ListView x:Name="CityDatabase" Margin="383,-1,25,96" SelectionMode="Single" BorderThickness="0">
+                        <ListView x:Name="CityDatabase" Margin="383,-1,25,96"  SelectionChanged="CarriersFieldsHandler" SelectionMode="Single" BorderThickness="0" >
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="DepartureCity" Width="100" DisplayMemberBinding="{Binding Name}"/>
-                                    <GridViewColumn Header="FTLAval" Width="60" DisplayMemberBinding="{Binding FTLRate}"/>
-                                    <GridViewColumn Header="LTLAval" Width="60" DisplayMemberBinding="{Binding LTLRate}"/>
+                                    <GridViewColumn Header="DepartureCity" Width="100" DisplayMemberBinding="{Binding DepotCity}"/>
+                                    <GridViewColumn Header="FTLAval" Width="60" DisplayMemberBinding="{Binding FTLAval}"/>
+                                    <GridViewColumn Header="LTLAval" Width="60" DisplayMemberBinding="{Binding LTLAval}"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>

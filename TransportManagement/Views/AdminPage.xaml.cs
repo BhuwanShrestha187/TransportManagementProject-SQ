@@ -136,7 +136,8 @@ namespace TransportManagement
          */
         private void manageDataButton_Click(object sender, RoutedEventArgs e)
         {
-            ResetUI(); 
+            ResetUI();
+            ResetManageButtonUI();
             manageDataButton.Background = Brushes.LightSkyBlue;
             manageDataGrid.Visibility = Visibility.Visible;
             updateRateGrid.Visibility = Visibility.Visible;
@@ -232,17 +233,120 @@ namespace TransportManagement
         {
             ResetManageButtonUI();
             carrierButton.Background = Brushes.LightSkyBlue;
+            CarrierDatabaseList.SelectedItem = null;
             updateCarrierGrid.Visibility = Visibility.Visible;
+            CarriersFieldsHandler(sender, e);
+            PopulateCarrierList(sender, e);
+        }
+        private void PopulateCarrierList(object sender, RoutedEventArgs e)
+        {
+            List<Carrier> carriersList = admin.FetchCarriers();
+            CarrierDatabaseList.ItemsSource = carriersList;
         }
 
-        private void CarriersFieldsHandler(object sender, SelectionChangedEventArgs e)
+        private void PopulateCarrierCitiesList(object sender, RoutedEventArgs e)
+        {
+            Carrier selectedCarrier = (Carrier)CarrierDatabaseList.SelectedItem;
+
+            List<CarrierCity> carriersList = admin.GetCitiesByCarrier(selectedCarrier.Name);
+            CityDatabase.ItemsSource = carriersList;
+        }
+
+        private void CarriersFieldsHandler(object sender, RoutedEventArgs e)
+        {
+            clearButton_Click(sender, e);
+
+            // If no option is selected
+            if (CarrierDatabaseList.SelectedItems.Count == 0 && CityDatabase.SelectedItems.Count == 0)
+            {
+                updateButton.Visibility = Visibility.Hidden;
+                deleteButton.Visibility = Visibility.Hidden;
+
+                CityDatabase.ItemsSource = new List<CarrierCity>();
+            }
+            else
+            {
+                updateButton.Visibility = Visibility.Visible;
+                deleteButton.Visibility = Visibility.Visible;
+
+                Carrier selectedCarrier = (Carrier)CarrierDatabaseList.SelectedItem;
+
+                if (selectedCarrier != null)
+                {
+                    try
+                    {
+                        string caller = (sender as System.Windows.Controls.ListView).Name;
+                        if (caller == "CarrierDatabaseList")
+                        {
+                            List<CarrierCity> carriersList = admin.GetCitiesByCarrier(selectedCarrier.Name);
+                            CityDatabase.ItemsSource = carriersList;
+                        }
+                    }
+                    catch (Exception) { }
+
+                    CarrierName.Text = selectedCarrier.Name;
+                    FTLRate.Text = selectedCarrier.FTLRate.ToString();
+                    LTLRate.Text = selectedCarrier.LTLRate.ToString();
+                    Reefer.Text = selectedCarrier.ReeferCharge.ToString();
+
+                    // Show details about the city if carrier and city is selected
+                    if (CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 1)
+                    {
+                        Departure.Visibility = Visibility.Visible;
+                        FTLAval.Visibility = Visibility.Visible;
+                        LTLAval.Visibility = Visibility.Visible;
+
+                        CarrierCity selectedCity = (CarrierCity)CityDatabase.SelectedItem;
+                        Departure.Text = selectedCity.DepotCity.ToString();
+                        FTLAval.Text = selectedCity.FTLAval.ToString();
+                        LTLAval.Text = selectedCity.LTLAval.ToString();
+                    }
+                }
+                else
+                {
+                    CityDatabase.ItemsSource = new List<CarrierCity>();
+                }
+            }
+        }
+
+
+        private void clearButton_Click(object sender, RoutedEventArgs e)
+        {
+            CarrierName.Text = "";
+            Departure.Text = "";
+            FTLAval.Text = "";
+            LTLAval.Text = "";
+            FTLRate.Text = "";
+            LTLRate.Text = "";
+            Reefer.Text = "";
+        }
+
+        private void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Load the selected carrier  at first
+            Carrier carrier = (Carrier)CarrierDatabaseList.SelectedItem;
+            if(CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 0)
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show($"Are you sure you want to delete {carrier.Name} carrier ?", "Sure?", MessageBoxButton.YesNo); 
+                if(result == MessageBoxResult.Yes)
+                {
+                    
+                }
+            }
+        }
+
+        private void updateButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
-      
-         
 
-      
+        private void addButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+
         private void routeButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -361,7 +465,6 @@ namespace TransportManagement
             }
         }
 
-
-       
+        
     }
 }

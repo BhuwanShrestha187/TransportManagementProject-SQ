@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Security.Policy;
 using MySql.Data.MySqlClient;
 using System.Linq.Expressions;
+using System.Windows.Media.Media3D;
 
 namespace TransportManagement
 {
@@ -370,6 +371,142 @@ namespace TransportManagement
             }
             return result;
         }
+
+
+
+        //********************  Filter Cities By Carrier ******************
+        public List<CarrierCity> FilterCitiesByCarrier(string carrierName)
+        {
+            List<CarrierCity> carrierCities = new List<CarrierCity>();
+            string qSQL = "SELECT * FROM CarrierCity INNER JOIN Carriers ON CarrierCity.CarrierID = Carriers.CarrierID WHERE CarrierName=@CarrierName AND IsActive=1";
+
+            try
+            {
+                string conString = ConnectionString();
+                using (MySqlConnection conn = new MySqlConnection(conString))
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(qSQL, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CarrierName", carrierName);
+
+                        MySqlDataReader rdr = cmd.ExecuteReader();
+                        if (rdr.HasRows)
+                        {
+                            while (rdr.Read())
+                            {
+                                // Getting the carrier of that city
+                                Carrier carr = new Carrier
+                                {
+                                    CarrierID = int.Parse(rdr["CarrierID"].ToString()),
+                                    Name = rdr["CarrierName"].ToString(),
+                                    FTLRate = double.Parse(rdr["FTLRate"].ToString()),
+                                    LTLRate = double.Parse(rdr["LTLRate"].ToString()),
+                                    ReeferCharge = double.Parse(rdr["reefCharge"].ToString())
+                                };
+
+                                CarrierCity carrCity = new CarrierCity
+                                {
+                                    Carrier = carr,
+                                    DepotCity = (City)Enum.Parse(typeof(City), rdr["DepotCity"].ToString(), true),
+                                    FTLAval = int.Parse(rdr["FTLAval"].ToString()),
+                                    LTLAval = int.Parse(rdr["LTLAval"].ToString())
+                                };
+
+                                carrierCities.Add(carrCity);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+            return carrierCities;
+        }
+
+        //Get all carriers 
+        public List<Carrier> GetAllCarriers()
+        {
+            string qSQL = "SELECT * FROM Carriers WHERE IsActive = 1";
+            List<Carrier> carriers = new List<Carrier>();
+
+            try
+            {
+                string conString = ConnectionString();
+
+                using (MySqlConnection conn = new MySqlConnection(conString))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(qSQL, conn))
+                    {
+                        using (MySqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                Carrier carr = new Carrier
+                                {
+                                    CarrierID = rdr.GetInt32("CarrierID"),
+                                    Name = rdr.GetString("CarrierName"),
+                                    FTLRate = rdr.GetDouble("FTLRate"),
+                                    LTLRate = rdr.GetDouble("LTLRate"),
+                                    ReeferCharge = rdr.GetDouble("reefCharge"),
+                                    IsActive = rdr.GetBoolean("IsActive")
+                                };
+                                carriers.Add(carr);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error in GetAllCarriers: {e.Message}", LogLevel.Error);
+                Logger.Log($"StackTrace: {e.StackTrace}", LogLevel.Error);
+                throw;
+            }
+
+            return carriers;
+        }
+
+
+        /*
+         * DELETE carriers from the system. 
+         */
+
+        public void DeleteCarrierFromSystem(Carrier carrier)
+        {
+            string query = "DELETE FROM Carriers WHERE CarrierName=@CarrierName"; 
+
+            try
+            {
+                using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open(); 
+                    using(MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CarrierName", carrier.Name);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            //The carrier with the specified name has been deleted
+                            Logger.Log($"Successfully delete the carrier: {carrier.Name}", LogLevel.Information); 
+                        }
+                    }
+                }
+            }
+
+            catch(Exception e)
+            {
+                Logger.Log($"Error while deleting the carrier: {carrier.Name}", LogLevel.Error); 
+            }
+        }
+
+
 
 
 
