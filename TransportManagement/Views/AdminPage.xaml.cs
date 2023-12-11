@@ -350,7 +350,13 @@ namespace TransportManagement
                 MessageBoxResult result = System.Windows.MessageBox.Show("Are you sure you want to delete the city: {carrierCity} ?", "Sure", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if(result == MessageBoxResult.Yes)
                 {
-                    
+                    bool deleted = admin.DeleteCarrierCity(carrierCity); 
+                    PopulateCarrierCitiesList(sender, e);   
+                    if(deleted == true)
+                    {
+                        System.Windows.MessageBox.Show($"{carrier.Name} and {carrierCity.DepotCity} was deleted successfully from the system", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Logger.Log($"{carrier.Name} and {carrierCity.DepotCity} was successfully deleted from the system. ", LogLevel.Information);
+                    }
                 }
 
             }

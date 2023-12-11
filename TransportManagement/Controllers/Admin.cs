@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,9 +88,11 @@ namespace TransportManagement
             return carrierID; 
         }
 
-        public bool DeleteCarrierCity(int carrierID)
+        public bool DeleteCarrierCity(CarrierCity carrierCity)
         {
-
+            bool deleted = false;
+            deleted = dal.DeleteCarrierCity(carrierCity);
+            return deleted;
         }
     }
 }

@@ -480,20 +480,22 @@ namespace TransportManagement
         public bool DeleteCarrierFromSystem(Carrier carrier)
         {
             bool deleted = false; 
-            string query = "DELETE FROM Carriers WHERE CarrierName=@CarrierName"; 
-
+            string query = "DELETE FROM Carriers WHERE CarrierName=@CarrierName";
+            Logger.Log("Delete from carriers is performed!!", LogLevel.Information);
             try
             {
                 using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
                 {
-                    conn.Open(); 
-                    using(MySqlCommand cmd = new MySqlCommand(query, conn))
+                    conn.Open();
+                    Logger.Log("Delete from carriers is performed2!!", LogLevel.Information);
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@CarrierName", carrier.Name);
                         int rowsAffected = cmd.ExecuteNonQuery();
-
+                        Logger.Log("Delete from carriers is performed3!!", LogLevel.Information);
                         if (rowsAffected > 0)
                         {
+                            Logger.Log("Delete from carriers is performed4!!", LogLevel.Information);
                             //The carrier with the specified name has been deleted
                             Logger.Log($"Successfully delete the carrier: {carrier.Name}", LogLevel.Information); 
                             deleted = true;
@@ -504,7 +506,7 @@ namespace TransportManagement
 
             catch(Exception e)
             {
-                Logger.Log($"Error while deleting the carrier: {carrier.Name}", LogLevel.Error); 
+                Logger.Log($"Error while deleting the carrier: {carrier.Name}. Exception: {e.Message}", LogLevel.Error); 
             }
             return deleted;
         }
@@ -542,9 +544,9 @@ namespace TransportManagement
             return -1; //Indicates failure
         }
 
-        public bool DeleteCarrierCity(int carrierID)
+        public bool DeleteCarrierCity(CarrierCity carrierCity)
         {
-            string query = "DELETE FROM CarrierCity WHERE CarrierID=@CarrierID";
+            string query = "DELETE FROM CarrierCity WHERE CarrierID=@CarrierID AND DepotCity=@DepotCity";
             try
             {
                 using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
@@ -552,7 +554,8 @@ namespace TransportManagement
                     conn.Open(); 
                     using(MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@CarrierID", carrierID);
+                        cmd.Parameters.AddWithValue("@CarrierID", carrierCity.Carrier.CarrierID);
+                        cmd.Parameters.AddWithValue("@DepotCity", carrierCity.DepotCity.ToString());    
                         cmd.ExecuteNonQuery(); 
                         return true;
                     }
