@@ -542,6 +542,30 @@ namespace TransportManagement
             return -1; //Indicates failure
         }
 
+        public bool DeleteCarrierCity(int carrierID)
+        {
+            string query = "DELETE FROM CarrierCity WHERE CarrierID=@CarrierID";
+            try
+            {
+                using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open(); 
+                    using(MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CarrierID", carrierID);
+                        cmd.ExecuteNonQuery(); 
+                        return true;
+                    }
+                }
+            }
+
+            catch(Exception e)
+            {
+                Logger.Log($"City deletion Failed!!", LogLevel.Error);
+            }
+
+            return false;
+        }
 
 
 

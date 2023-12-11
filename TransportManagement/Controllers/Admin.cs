@@ -86,5 +86,10 @@ namespace TransportManagement
             int carrierID = dal.GetCarrierIDByName(carrierName);
             return carrierID; 
         }
+
+        public bool DeleteCarrierCity(int carrierID)
+        {
+
+        }
     }
 }

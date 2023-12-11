@@ -335,20 +335,24 @@ namespace TransportManagement
                     bool carrierDeleted = admin.DeleteCarrier(carrier); 
                     if(carrierDeleted == true)
                     {
-                        PopulateCarrierCitiesList(sender, e);
+                        PopulateCarrierList(sender, e);
                         CityDatabase.ItemsSource = new List<CarrierCity>();
                         System.Windows.MessageBox.Show($"{carrier.Name} was deleted successfully from the system", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
+            }
 
-                else if(CarrierDatabaseList.SelectedItems.Count == 0 && CarrierDatabaseList.SelectedItems.Count == 1)
+
+            else if (CarrierDatabaseList.SelectedItems.Count == 0 && CarrierDatabaseList.SelectedItems.Count == 1)
+            {
+                CarrierCity carrierCity = (CarrierCity)CityDatabase.SelectedItem;
+                carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name);
+                MessageBoxResult result = System.Windows.MessageBox.Show("Are you sure you want to delete the city: {carrierCity} ?", "Sure", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if(result == MessageBoxResult.Yes)
                 {
-                    CarrierCity carrierCity = (CarrierCity)CityDatabase.SelectedItem; 
-                    carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name); 
-
-                    
                     
                 }
+
             }
         }
 
