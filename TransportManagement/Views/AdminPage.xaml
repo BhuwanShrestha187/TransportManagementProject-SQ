@@ -83,10 +83,9 @@
                         <Button x:Name="ltlUpdateButton" Content="Update" Height="25" Width="80" Margin="324,50,228,163" Click="ltlUpdateButton_Click"/>
                     </Grid>
 
-                    <Grid x:Name="updateCarrierGrid" Visibility="Visible">
+                    <Grid x:Name="updateCarrierGrid" Visibility="Hidden">
                         <Button x:Name="clearButton" Content="ClearAll" Width="60" Height="20" Margin="18,145,554,73" Click="clearButton_Click"/>
                         <Button x:Name="updateButton" Content="Update" Width="60" Height="20" Margin="18,191,554,27" Click="updateButton_Click"/>
-                        <Button x:Name="addButton" Content="Add" Width="60" Height="20" Margin="18,215,554,3" RenderTransformOrigin="-0.429,0.868" Click="addButton_Click"/>
                         <Button x:Name="deleteButton" Content="Delete" Width="60" Height="20" Margin="18,168,554,50" Click="deleteButton_Click"/>
 
                         <Label Content="Name" Margin="81,140,507,75"/>
@@ -107,10 +106,7 @@
                         <TextBox x:Name="Departure" Height="20" Margin="462,144,25,74"/>
                         <TextBox x:Name="FTLAval" Height="20" Margin="462,166,25,52"/>
                         <TextBox x:Name="LTLAval" Height="20" Margin="462,188,25,30"/>
-                        
-                        
-
-
+  
                         <ListView x:Name="CarrierDatabaseList" Margin="18,-1,306,96" SelectionMode="Single" SelectionChanged="CarriersFieldsHandler" BorderThickness="0" >
                             <ListView.View>
                                 <GridView>
@@ -131,8 +127,22 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
-                        
+                    </Grid>
 
+                    <Grid x:Name="updateRouteGrid" Visibility="Visible">
+                        <ListView x:Name="RouteDatabase" Margin="10,10,20,90"  SelectionMode="Single" PreviewMouseLeftButtonUp="RouteDatabase_PreviewMouseLeftButtonUp">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Destination" Width="160" DisplayMemberBinding="{Binding Destination}" />
+                                    <GridViewColumn Header="Km's" Width="60" DisplayMemberBinding="{Binding Distance}" />
+                                    <GridViewColumn Header="Time (h)" Width="60" DisplayMemberBinding="{Binding Time}" />
+                                    <GridViewColumn Header="West" Width="160" DisplayMemberBinding="{Binding West}" />
+                                    <GridViewColumn Header="East" Width="160" DisplayMemberBinding="{Binding East}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        
+                        <TextBox
                     </Grid>
                 </Grid>
             </Grid>

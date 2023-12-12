@@ -106,30 +106,41 @@ namespace TransportManagement
             ResetUI();
             logFileGrid.Visibility = Visibility.Visible;
             logFileButton.Background = Brushes.LightSkyBlue;
+
             try
             {
                 string logFilePath = Logger.GetCurrentLogDirectory();
                 StringBuilder logContent = new StringBuilder();
 
-                using(StreamReader sr = new StreamReader(logFilePath))
+                using (StreamReader sr = new StreamReader(logFilePath))
                 {
-                    string line; 
-                    while((line = sr.ReadLine()) != null)
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
                     {
                         logContent.AppendLine(line);
-                        
                     }
                 }
 
-                logFileContentsTextBlock.Text = logContent.ToString();  
+                logFileContentsTextBlock.Text = logContent.ToString();
             }
-
-            catch(Exception ex)
+            catch (FileNotFoundException ex)
             {
-                System.Windows.MessageBox.Show("Error accessing the log file: " + Logger.GetCurrentLogDirectory()); 
-                return;
+                System.Windows.MessageBox.Show($"Log file not found: {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                System.Windows.MessageBox.Show($"Unauthorized access to the log file: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                System.Windows.MessageBox.Show($"Error reading the log file: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Unexpected error: {ex.Message}");
             }
         }
+
 
         /*
          * ------------------- WOrking with the manageData ButtonCLick from here -----------------------
@@ -337,13 +348,14 @@ namespace TransportManagement
                     {
                         PopulateCarrierList(sender, e);
                         CityDatabase.ItemsSource = new List<CarrierCity>();
+                        Logger.Log($"Successfully delete the carrier: {carrier.Name}", LogLevel.Information);
                         System.Windows.MessageBox.Show($"{carrier.Name} was deleted successfully from the system", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
             }
 
 
-            else if (CarrierDatabaseList.SelectedItems.Count == 0 && CarrierDatabaseList.SelectedItems.Count == 1)
+            else if (CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 1)
             {
                 CarrierCity carrierCity = (CarrierCity)CityDatabase.SelectedItem;
                 carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name);
@@ -360,16 +372,179 @@ namespace TransportManagement
                 }
 
             }
+
+            else
+            {
+                System.Windows.MessageBox.Show("Please select the carrier that you want to delete!!", "Nothing selected", MessageBoxButton.OK);
+            }
         }
 
+        /*
+         * 
+         */
         private void updateButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            string carrierName;
+            double _FTLRate;
+            double _LTLRate;
+            double reefer;
+
+            string newDestination;
+            City newCity;
+            int newFTL;
+            int newLTL;
+
+            Carrier carrier;
+            CarrierCity carrierCity = null;
+
+            try
+            {
+                // Get the carrier information from the form
+                carrierName = CarrierName.Text;
+                _FTLRate = double.Parse(FTLRate.Text);
+                _LTLRate = double.Parse(LTLRate.Text);
+                reefer = double.Parse(Reefer.Text);
+
+                // create a carrier object with the values
+                carrier = new Carrier(carrierName, _FTLRate, _LTLRate, reefer);
+                carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name);
+
+                if (CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 1)
+                {
+                    // Get the city and rates information
+                    newDestination = Departure.Text;
+                    newCity = (City)Enum.Parse(typeof(City), newDestination, true);
+                    newFTL = int.Parse(FTLAval.Text);
+                    newLTL = int.Parse(LTLAval.Text);
+
+                    carrierCity = new CarrierCity(carrier, newCity, newFTL, newLTL);
+                }
+            }
+            catch (Exception)
+            {
+                System.Windows.MessageBox.Show("Please, make sure that the fields were filled appropriately.", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                if (CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 0)
+                {
+                    admin.UpdateCarrierInfo(carrier);
+
+                    // Empty Cities list
+                    CityDatabase.ItemsSource = new List<CarrierCity>();
+
+                    System.Windows.MessageBox.Show($"{carrier.Name} updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Logger.Log($"{carrier.Name} information was updated.", LogLevel.Information);
+                }
+                // Show details about the city if carrier and city is selected
+                else if (CarrierDatabaseList.SelectedItems.Count == 1 && CityDatabase.SelectedItems.Count == 1)
+                {
+                    carrierCity.Carrier.CarrierID = admin.GetCarrierIDByName(carrier.Name);
+                    admin.UpdateCity(carrierCity, ((CarrierCity)CityDatabase.SelectedItem).DepotCity);
+
+                    // Update the cities list
+                    List<CarrierCity> carriersList = admin.GetCitiesByCarrier(carrier.Name);
+                    CityDatabase.ItemsSource = carriersList;
+
+                    System.Windows.MessageBox.Show($"{carrierCity.DepotCity} updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Logger.Log($"{carrier.Name} depot City was updated to {carrierCity.DepotCity}", LogLevel.Information);
+                }
+                PopulateCarrierList(sender, e);
+            }
+            // Inform the user if the operation fails
+            catch (ArgumentException exc)
+            {
+                System.Windows.MessageBox.Show(exc.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                System.Windows.MessageBox.Show("Something went wrong. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
+            string carrierName;
+            double fTLRate;
+            double lTLRate;
+            double reeferCharge;
 
+            string newDestination;
+            City newCity;
+            int newFTL;
+            int newLTL;
+
+            Carrier newCarrier; 
+            CarrierCity newCarrierCity;
+
+            try
+            {
+                //Get the carrier information from the textboxes
+                carrierName = CarrierName.Text;
+                fTLRate = double.Parse(FTLRate.Text);
+                lTLRate = double.Parse(LTLRate.Text);
+                reeferCharge = double.Parse(Reefer.Text);
+
+                newCarrier = new Carrier(carrierName, fTLRate, lTLRate, reeferCharge);
+                newCarrier.CarrierID = admin.GetCarrierIDByName(newCarrier.Name);
+
+                newDestination = Departure.Text;
+                newCity = (City)Enum.Parse(typeof(City), newDestination, true);
+                newFTL = int.Parse(FTLAval.Text);
+                newLTL = int.Parse(LTLAval.Text);
+
+                newCarrierCity = new CarrierCity(newCarrier, newCity, newFTL, newLTL); 
+            }
+
+             catch (Exception)
+            {
+                System.Windows.MessageBox.Show("Please, make sure that the fields were filled appropriately.", "Attention", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                // If carrier exist, create city for that carrier (-1 if it doesnt exist)
+                if (admin.GetCarrierIDByName(carrierName) != -1)
+                {
+                    admin.CarrierCity(newCarrierCity, 1);
+
+                    // Update the cities list
+                    List<CarrierCity> carriersList = admin.GetCitiesByCarrier(newCarrier.Name);
+                    CityDatabase.ItemsSource = carriersList;
+
+                    System.Windows.MessageBox.Show($"New carrier depot city {newCarrierCity.DepotCity} created successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Logger.Log($"{carrierName} depot city {newCarrierCity.DepotCity} was successfully inserted to the database.", LogLevel.Information);
+                }
+                // If it's a new carrier, create the carrier and the city
+                else
+                {
+                    newCarrier.CarrierID = (int)admin.CarrierCreation(newCarrier);
+                    admin.CarrierCity(newCarrierCity, 1);
+
+                    PopulateCarrierList(sender, e);
+                    CityDatabase.ItemsSource = new List<CarrierCity>();
+
+                    System.Windows.MessageBox.Show($"New carrier {newCarrier.Name} created successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Logger.Log($"New carrier {carrierName} was successfully inserted to the database.", LogLevel.Information);
+                }
+            }
+            // Inform the user if the operation fails
+            catch (ArgumentException exc)
+            {
+                System.Windows.MessageBox.Show(exc.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                System.Windows.MessageBox.Show("Something went wrong. Please try again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
 

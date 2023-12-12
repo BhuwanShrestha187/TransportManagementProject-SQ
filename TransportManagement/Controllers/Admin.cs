@@ -94,5 +94,35 @@ namespace TransportManagement
             deleted = dal.DeleteCarrierCity(carrierCity);
             return deleted;
         }
+
+        // Update the carrier info
+        public void UpdateCarrierInfo(Carrier newCarrier)
+        {
+            dal.UpdateCarrier(newCarrier);
+        }
+
+        //Update City.
+        public void UpdateCity(CarrierCity cCity, City oldCity)
+        {
+            dal.UpdateCarrierCity(cCity, oldCity);
+        }
+
+        public void CarrierCity(CarrierCity carrierCity, int CR)
+        {
+            if (CR == 0)
+            {
+                dal.RemoveCarrierCity(carrierCity);
+            }
+            else
+            {
+                dal.CreateCarrierCity(carrierCity);
+            }
+        }
+
+
+        public long CarrierCreation(Carrier carrier)
+        {
+            return dal.CreateCarrier(carrier);
+        }
     }
 }

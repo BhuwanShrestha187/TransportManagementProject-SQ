@@ -80,19 +80,20 @@ namespace TransportManagement
         public static int ChangeLogDirectory(string newDirectory)
         {
             string oldDirectory = ConfigurationManager.AppSettings.Get("LogDirectory");
-
-            if (oldDirectory == newDirectory)
-            {
-                return 0;
-            }
-
-            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            configuration.AppSettings.Settings["LogDirectory"].Value = newDirectory;
-            configuration.Save(ConfigurationSaveMode.Full, true);
-            ConfigurationManager.RefreshSection("appSettings");
-
             try
             {
+              
+
+                if (oldDirectory == newDirectory)
+                {
+                    return 0; // No change needed
+                }
+
+                Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                configuration.AppSettings.Settings["LogDirectory"].Value = newDirectory;
+                configuration.Save(ConfigurationSaveMode.Full, true);
+                ConfigurationManager.RefreshSection("appSettings");
+
                 if (isSetup)
                 {
                     Logger.Log($"Log directory changed from \"{oldDirectory}\" to \"{newDirectory}\"", LogLevel.Information);
@@ -112,18 +113,22 @@ namespace TransportManagement
                     Setup();
                 }
 
-                return 0;
+                return 0; // Success
             }
             catch (Exception e)
             {
                 Logger.Log($"We couldn't change the log directory. {e.Message}", LogLevel.Error);
 
+                // Rollback the change in case of an exception
+                Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 configuration.AppSettings.Settings["LogDirectory"].Value = oldDirectory;
                 configuration.Save(ConfigurationSaveMode.Full, true);
                 ConfigurationManager.RefreshSection("appSettings");
-                return 1;
+
+                return 1; // Failure
             }
         }
+
 
         //Move the log file to the new directory
         public static void UpdateLogFileInNewDirectory(string oldDirectory, string newDirectory)

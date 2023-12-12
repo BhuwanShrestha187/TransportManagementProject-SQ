@@ -8,6 +8,7 @@ using System.Security.Policy;
 using MySql.Data.MySqlClient;
 using System.Linq.Expressions;
 using System.Windows.Media.Media3D;
+using System.Security.Cryptography;
 
 namespace TransportManagement
 {
@@ -481,23 +482,22 @@ namespace TransportManagement
         {
             bool deleted = false; 
             string query = "DELETE FROM Carriers WHERE CarrierName=@CarrierName";
-            Logger.Log("Delete from carriers is performed!!", LogLevel.Information);
+            
             try
             {
                 using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
                 {
                     conn.Open();
-                    Logger.Log("Delete from carriers is performed2!!", LogLevel.Information);
+                  
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@CarrierName", carrier.Name);
                         int rowsAffected = cmd.ExecuteNonQuery();
-                        Logger.Log("Delete from carriers is performed3!!", LogLevel.Information);
+                       
                         if (rowsAffected > 0)
                         {
-                            Logger.Log("Delete from carriers is performed4!!", LogLevel.Information);
                             //The carrier with the specified name has been deleted
-                            Logger.Log($"Successfully delete the carrier: {carrier.Name}", LogLevel.Information); 
+                            conn.Close();
                             deleted = true;
                         }
                     }
@@ -530,6 +530,7 @@ namespace TransportManagement
                         object result = cmd.ExecuteScalar(); 
                         if(result != null && result != DBNull.Value)
                         {
+                            conn.Close();
                             return Convert.ToInt32(result); 
                         }
                     }
@@ -557,8 +558,10 @@ namespace TransportManagement
                         cmd.Parameters.AddWithValue("@CarrierID", carrierCity.Carrier.CarrierID);
                         cmd.Parameters.AddWithValue("@DepotCity", carrierCity.DepotCity.ToString());    
                         cmd.ExecuteNonQuery(); 
+                        conn.Close();
                         return true;
                     }
+                   
                 }
             }
 
@@ -569,6 +572,207 @@ namespace TransportManagement
 
             return false;
         }
+
+
+        /*
+         * Update the carrier info. 
+         */
+
+        public void UpdateCarrier(Carrier newCarrier)
+        {
+            string sql = "UPDATE Carriers SET CarrierName=@CarrierName, FTLRate=@FTLRate, LTLRate=@LTLRate, ReefCharge=@ReefCharge WHERE CarrierID=@CarrierID";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@CarrierName", newCarrier.Name);
+                        cmd.Parameters.AddWithValue("@FTLRate", newCarrier.FTLRate);
+                        cmd.Parameters.AddWithValue("@LTLRate", newCarrier.LTLRate);
+                        cmd.Parameters.AddWithValue("@ReefCharge", newCarrier.ReeferCharge);
+                        cmd.Parameters.AddWithValue("@CarrierID", newCarrier.CarrierID);
+
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+        }
+
+        /*
+         * Update Carrier City
+         */
+
+        public void UpdateCarrierCity(CarrierCity newCarrierCity, City oldCity)
+        {
+            string sql = "UPDATE CarrierCity SET DepotCity=@DepotCity, FTLAval=@FTLAval, LTLAval=@LTLAval WHERE CarrierID=@CarrierID AND DepotCity=@OldDepotCity";
+
+            try
+            {
+                List<CarrierCity> CarrierCities = FilterCitiesByCarrier(newCarrierCity.Carrier.Name);
+                // Check if current carrier already contains the new depot city, if so, don't duplicate
+                if ((CarrierCities.FindIndex(carrierCity => carrierCity.DepotCity == newCarrierCity.DepotCity) >= 0) && oldCity != newCarrierCity.DepotCity)
+                {
+                    throw new ArgumentException($"Carrier city {newCarrierCity.DepotCity} already exists.");
+                }
+
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@OldDepotCity", oldCity.ToString());
+                        cmd.Parameters.AddWithValue("@CarrierID", newCarrierCity.Carrier.CarrierID);
+                        cmd.Parameters.AddWithValue("@DepotCity", newCarrierCity.DepotCity.ToString());
+                        cmd.Parameters.AddWithValue("@FTLAval", newCarrierCity.FTLAval);
+                        cmd.Parameters.AddWithValue("@LTLAval", newCarrierCity.LTLAval);
+
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+        }
+
+
+
+        //Remove Carrier City.
+        public void RemoveCarrierCity(CarrierCity carrierCity)
+        {
+            string sql = "DELETE FROM CarrierCity WHERE CarrierID=@CarrierID AND DepotCity=@DepotCity";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@CarrierID", carrierCity.Carrier.CarrierID);
+                        cmd.Parameters.AddWithValue("@DepotCity", carrierCity.DepotCity.ToString());
+
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+        }
+
+
+
+        public void CreateCarrierCity(CarrierCity carrierCity)
+        {
+            string sql = "INSERT INTO CarrierCity (CarrierID, DepotCity, FTLAval, LTLAval) VALUES (@CarrierID, @DepotCity, @FTLAval, @LTLAval)";
+
+            try
+            {
+                List<CarrierCity> CarrierCities = FilterCitiesByCarrier(carrierCity.Carrier.Name);
+                // Check if current carrier already contains the new depot city, if so, don't duplicate
+                if ((CarrierCities.FindIndex(_carrierCity => _carrierCity.DepotCity == carrierCity.DepotCity) >= 0))
+                {
+                    throw new ArgumentException($"Carrier city {carrierCity.DepotCity} already exists.");
+                }
+
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@CarrierID", carrierCity.Carrier.CarrierID);
+                        cmd.Parameters.AddWithValue("@DepotCity", carrierCity.DepotCity.ToString());
+                        cmd.Parameters.AddWithValue("@FTLAval", carrierCity.FTLAval);
+                        cmd.Parameters.AddWithValue("@LTLAval", carrierCity.LTLAval);
+
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Carrier Depot city \"{carrierCity.DepotCity}\" already exists.");
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+        }
+
+        public long CreateCarrier(Carrier carrier)
+        {
+            string sql = "INSERT INTO Carriers (CarrierName, FTLRate, LTLRate, reefCharge) VALUES (@CarrierName, @FTLRate, @LTLRate, @reefCharge)";
+
+            long id;
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@CarrierName", carrier.Name);
+                        cmd.Parameters.AddWithValue("@FTLRate", carrier.FTLRate);
+                        cmd.Parameters.AddWithValue("@LTLRate", carrier.LTLRate);
+                        cmd.Parameters.AddWithValue("@reefCharge", carrier.ReeferCharge);
+
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
+                        cmd.ExecuteNonQuery();
+
+                        id = cmd.LastInsertedId;
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Carrier \"{carrier.Name}\" already exists.");
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+
+            return id;       // Get the ID of the inserted item
+        }
+
+
 
 
 
