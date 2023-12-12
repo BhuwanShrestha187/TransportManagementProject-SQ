@@ -5,8 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportManagement"
         mc:Ignorable="d"
-        Title="BuyerPage" Height="450" Width="800">
+       Title="AdminPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
+WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel VerticalAlignment="Top" Grid.Row="0" >
+            <Image Source="..\fullbanner.jpg" Height="145" Width="879"/>
+            <Button x:Name="closeButton" Content="X" Foreground="White" VerticalAlignment="Top" Width="30" Margin="770 -148 0 0" BorderThickness="0" Background="Black" FontSize="17" FontWeight="Bold" Click="closeButton_Click"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"/>
+                
+                <ColumnDefinition Width="1"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="2" Background="Black"/>
+
+            <StackPanel Grid.Column="0">
+                <Button x:Name="marketPlaceButton" Content="Market Place" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="marketPlaceButton_Click" />
+                <Button x:Name="ordersButton" Content="Orders" Height="45" FontSize="16"  BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
+                <Button x:Name="Clients" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
+            </StackPanel>
+
+            <Grid x:Name="marketPlaceGrid" Grid.Column="2" Visibility="Visible">
+                
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
