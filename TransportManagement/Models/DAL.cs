@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using static MySql.Data.MySqlClient.MySqlBackup;
 using System.IO.Abstractions;
+using System.Xml.Linq;
 
 namespace TransportManagement
 {
@@ -966,6 +967,86 @@ namespace TransportManagement
             }
         }
 
+
+        public Client GetClientByName(string clientName)
+        {
+            Client client = null;
+            string sql = "SELECT ClientID, ClientName FROM Clients WHERE ClientName=@ClientName";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    {
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@ClientName", clientName) ;
+
+                        MySqlDataReader rdr = cmd.ExecuteReader();
+
+                        if (rdr.HasRows)
+                        {
+                            while (rdr.Read())
+                            {
+                                client = new Client
+                                {
+                                    ClientID = int.Parse(rdr["ClientID"].ToString()),
+                                    ClientName = rdr["ClientName"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+            }
+
+            return client;
+        }
+
+
+        public void SaveOrderToDatabase(Order order)
+        {
+
+            try
+            {
+            
+                using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(
+                        "INSERT INTO Orders (ClientName, Origin, Destination, JobType, Quantity, VanType, " +
+                        "OrderCreationDate, OrderAcceptedDate, InvoiceGenerated, IsCompleted) " +
+                        "VALUES (@ClientName, @Origin, @Destination, @JobType, @Quantity, @VanType, " +
+                        "@OrderCreationDate, @OrderAcceptedDate, @InvoiceGenerated, @IsCompleted);",
+                        connection))
+                    {
+                        cmd.Parameters.AddWithValue("@ClientName", order.ClientName);
+                        cmd.Parameters.AddWithValue("@Origin", order.Origin);
+                        cmd.Parameters.AddWithValue("@Destination", order.Destination);
+                        cmd.Parameters.AddWithValue("@JobType", order.JobType);
+                        cmd.Parameters.AddWithValue("@Quantity", order.Quantity);
+                        cmd.Parameters.AddWithValue("@VanType", order.VanType);
+                        cmd.Parameters.AddWithValue("@OrderCreationDate", order.OrderCreationDate);
+                        cmd.Parameters.AddWithValue("@OrderAcceptedDate", order.OrderAcceptedDate);
+                        cmd.Parameters.AddWithValue("@InvoiceGenerated", order.InvoiceGenerated);
+                        cmd.Parameters.AddWithValue("@IsCompleted", order.IsCompleted);
+                        
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.Log($"Unable to save the order in the database.! {ex.Message}", LogLevel.Error); 
+            }
+        }
 
 
 

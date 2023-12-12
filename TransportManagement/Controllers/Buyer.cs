@@ -17,7 +17,7 @@ namespace TransportManagement
             return list;
         }
 
-        public void GenerateOrder(Contract contract)
+        public Order GenerateOrder(Contract contract)
         {
             Order order = new Order
             {
@@ -33,9 +33,23 @@ namespace TransportManagement
                 IsCompleted = 0,   // Assuming 0 means false
             };
 
-          
+            if(dal.GetClientByName(order.ClientName) == null)
+            {
+                Client client = new Client(order.ClientName);
+                dal.CreateClient(client);
+            }
 
-            
+            try
+            {
+                dal.SaveOrderToDatabase(order);
+            }
+
+            catch(Exception ex)
+            {
+                Logger.Log("Orer cannot be saved to the database!!", LogLevel.Error);
+            }
+
+            return order;
 
 
         }
