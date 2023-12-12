@@ -19,9 +19,11 @@ namespace TransportManagement
 
         public Order GenerateOrder(Contract contract)
         {
+            int clientID = dal.GetClientIDByName(contract.ClientName); 
             Order order = new Order
             {
-                ClientName = contract.ClientName,
+                ClientName = contract.ClientName, 
+                ClientID = clientID,
                 Origin = contract.Origin,
                 Destination = contract.Destination,
                 JobType = contract.JobType,
@@ -52,22 +54,22 @@ namespace TransportManagement
             return order;
         }
 
-        public void GetOrdersFromDatabase(string quantity)
-        {
-            if (quantity == "All")
-            {
-                dal.GetAllOrders();
-            }
+        //public void GetOrdersFromDatabase(string quantity)
+        //{
+        //    if (quantity == "All")
+        //    {
+        //        dal.GetAllOrders();
+        //    }
 
-            if(quantity == "Active")
-            {
-                dal.GetAllActiveOrders(); 
-            }
+        //    if(quantity == "Active")
+        //    {
+        //        dal.GetAllActiveOrders(); 
+        //    }
 
-            if(quantity == "Completed")
-            {
-                dal.GetCompletedOrders();
-            }
-        }
+        //    if(quantity == "Completed")
+        //    {
+        //        dal.GetCompletedOrders();
+        //    }
+        //}
     }
 }

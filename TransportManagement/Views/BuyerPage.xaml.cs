@@ -102,7 +102,7 @@ namespace TransportManagement
         private void ViewOrders()
         {
             List<Order> orders = new List<Order>();
-            orders = buyer.GetOrders("All");
+            //orders = buyer.GetOrders("All");
             
         }
 
@@ -122,6 +122,11 @@ namespace TransportManagement
         }
 
         private void generateOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Selection_Changed(object sender, SelectionChangedEventArgs e)
         {
 
         }

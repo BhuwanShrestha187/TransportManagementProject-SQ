@@ -19,6 +19,7 @@ using System.IO;
 using static MySql.Data.MySqlClient.MySqlBackup;
 using System.IO.Abstractions;
 using System.Xml.Linq;
+using TransportManagement;
 
 namespace TransportManagement
 {
@@ -1008,7 +1009,28 @@ namespace TransportManagement
             return client;
         }
 
+        public int GetClientIDByName(string clientName)
+        {
+            using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+            {
+                connection.Open();
 
+                using (MySqlCommand cmd = new MySqlCommand("SELECT ClientID FROM Clients WHERE ClientName = @ClientName", connection))
+                {
+                    cmd.Parameters.AddWithValue("@ClientName", clientName);
+
+                    object result = cmd.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToInt32(result);
+                    }
+                }
+            }
+
+            // Return a default or error value (e.g., -1) if the client is not found
+            return -1;
+        }
         public void SaveOrderToDatabase(Order order)
         {
 
@@ -1020,13 +1042,14 @@ namespace TransportManagement
                     connection.Open();
 
                     using (MySqlCommand cmd = new MySqlCommand(
-                        "INSERT INTO Orders (ClientName, Origin, Destination, JobType, Quantity, VanType, " +
+                        "INSERT INTO Orders (ClientName, ClientID, Origin, Destination, JobType, Quantity, VanType, " +
                         "OrderCreationDate, OrderAcceptedDate, InvoiceGenerated, IsCompleted) " +
-                        "VALUES (@ClientName, @Origin, @Destination, @JobType, @Quantity, @VanType, " +
+                        "VALUES (@ClientName, @ClientID, @Origin, @Destination, @JobType, @Quantity, @VanType, " +
                         "@OrderCreationDate, @OrderAcceptedDate, @InvoiceGenerated, @IsCompleted);",
                         connection))
                     {
-                        cmd.Parameters.AddWithValue("@ClientName", order.ClientName);
+                        cmd.Parameters.AddWithValue("@ClientName", order.ClientID);
+                        cmd.Parameters.AddWithValue("@ClientID", order.ClientID);
                         cmd.Parameters.AddWithValue("@Origin", order.Origin);
                         cmd.Parameters.AddWithValue("@Destination", order.Destination);
                         cmd.Parameters.AddWithValue("@JobType", order.JobType);
@@ -1049,6 +1072,75 @@ namespace TransportManagement
         }
 
 
+   
+
+    //public List<Order> GetAllOrders()
+    //{
+            
+    //}
+
+    public List<Order> GetAllActiveOrders()
+    {
+            List<Order> orders = new List<Order>();
+            try
+            {
+                 using (MySqlConnection con = new MySqlConnection(ConnectionString()))
+                {
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Orders " +
+                         "INNER JOIN Clients ON Orders.ClientID = Clients.ClientID WHERE IsCompleted=0", con);
+                    con.Open();
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Order newOrder = new Order
+                            {
+                                OrderID = int.Parse(rdr["OrderID"].ToString()),
+                                ClientName = rdr["ClientName"].ToString()
+                            };
+                            if (DateTime.TryParse(rdr["OrderDate"].ToString(), out DateTime dt))
+                            {
+                                newOrder.OrderCreationDate = dt;
+                            }
+
+                            newOrder.Origin = (City)Enum.Parse(typeof(City), rdr["Origin"].ToString(), true);
+                            newOrder.Destination = (City)Enum.Parse(typeof(City), rdr["Destination"].ToString(), true);
+                            newOrder.JobType = (JobType)int.Parse(rdr["JobType"].ToString());
+                            newOrder.VanType = (VanType)int.Parse(rdr["VanType"].ToString());
+                            newOrder.Quantity = int.Parse(rdr["Quantity"].ToString());
+                            newOrder.IsCompleted = int.Parse(rdr["IsCompleted"].ToString());
+                            if (DateTime.TryParse(rdr["OrderCreationDate"].ToString(), out DateTime dt2))
+                            {
+                                newOrder.OrderAcceptedDate = dt2;
+                            }
+
+                            if (DateTime.TryParse(rdr["OrderCompletedDate"].ToString(), out DateTime dt3))
+                            {
+                                newOrder.OrderCompletionDate = dt3;
+                            }
+
+                            orders.Add(newOrder);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Unable to fetch all active orders. {e.Message}");
+            }
+
+            return orders;
+        }
+
+    //public List<Order> GetCompletedOrders()
+    //{
+
+    //}
+
+    
 
 
 

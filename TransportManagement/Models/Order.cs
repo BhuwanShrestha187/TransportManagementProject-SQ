@@ -9,11 +9,13 @@ namespace TransportManagement
     public class Order
     {
         public int OrderID { get; set; }
+        public int ClientID {  get; set; }
 
         public string ClientName { get; set; }
 
 
         public DateTime OrderCreationDate { get; set; }
+        
         public DateTime OrderAcceptedDate { get; set; }
         public DateTime OrderCompletionDate { get; set; }
         public int IsCompleted { get; set; }
