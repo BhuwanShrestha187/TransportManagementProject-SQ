@@ -20,6 +20,7 @@ using static MySql.Data.MySqlClient.MySqlBackup;
 using System.IO.Abstractions;
 using System.Xml.Linq;
 using TransportManagement;
+using MySqlX.XDevAPI;
 
 namespace TransportManagement
 {
@@ -1009,77 +1010,71 @@ namespace TransportManagement
             return client;
         }
 
-        public int GetClientIDByName(string clientName)
+        
+       public void SaveOrderToDatabase(Order order)
         {
-            using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
-            {
-                connection.Open();
-
-                using (MySqlCommand cmd = new MySqlCommand("SELECT ClientID FROM Clients WHERE ClientName = @ClientName", connection))
-                {
-                    cmd.Parameters.AddWithValue("@ClientName", clientName);
-
-                    object result = cmd.ExecuteScalar();
-
-                    if (result != null && result != DBNull.Value)
-                    {
-                        return Convert.ToInt32(result);
-                    }
-                }
-            }
-
-            // Return a default or error value (e.g., -1) if the client is not found
-            return -1;
-        }
-        public void SaveOrderToDatabase(Order order)
-        {
+            string sql = "INSERT INTO Orders (ClientID, ClientName, Origin, Destination, JobType, Quantity, VanType, OrderCreationDate) " +
+                "VALUES (@ClientID, @ClientName, @Origin, @Destination, @JobType, @Quantity, @VanType, @OrderCreationDate)";
 
             try
             {
-            
-                using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+                // Get the client from the database and raise an error if it doesn't exist
+                Client client;
+                if ((client = GetClientByName(order.ClientName)) == null)
                 {
-                    connection.Open();
+                    throw new KeyNotFoundException($"Client {order.ClientName} does not exist in the database.");
+                }
 
-                    using (MySqlCommand cmd = new MySqlCommand(
-                        "INSERT INTO Orders (ClientName, ClientID, Origin, Destination, JobType, Quantity, VanType, " +
-                        "OrderCreationDate, OrderAcceptedDate, InvoiceGenerated, IsCompleted) " +
-                        "VALUES (@ClientName, @ClientID, @Origin, @Destination, @JobType, @Quantity, @VanType, " +
-                        "@OrderCreationDate, @OrderAcceptedDate, @InvoiceGenerated, @IsCompleted);",
-                        connection))
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddWithValue("@ClientName", order.ClientID);
-                        cmd.Parameters.AddWithValue("@ClientID", order.ClientID);
-                        cmd.Parameters.AddWithValue("@Origin", order.Origin);
-                        cmd.Parameters.AddWithValue("@Destination", order.Destination);
+                        order.OrderAcceptedDate = DateTime.Now;
+
+                        // Populate all arguments in the insert
+                        cmd.Parameters.AddWithValue("@ClientID", client.ClientID);
+                        cmd.Parameters.AddWithValue("@ClientName", client.ClientName);
+                        cmd.Parameters.AddWithValue("@Origin", order.Origin.ToString());
+                        cmd.Parameters.AddWithValue("@Destination", order.Destination.ToString());
                         cmd.Parameters.AddWithValue("@JobType", order.JobType);
                         cmd.Parameters.AddWithValue("@Quantity", order.Quantity);
                         cmd.Parameters.AddWithValue("@VanType", order.VanType);
-                        cmd.Parameters.AddWithValue("@OrderCreationDate", order.OrderCreationDate);
-                        cmd.Parameters.AddWithValue("@OrderAcceptedDate", order.OrderAcceptedDate);
-                        cmd.Parameters.AddWithValue("@InvoiceGenerated", order.InvoiceGenerated);
-                        cmd.Parameters.AddWithValue("@IsCompleted", order.IsCompleted);
-                        
+                        cmd.Parameters.AddWithValue("@OrderCreationDate", order.OrderAcceptedDate);
 
+                        // Execute the insertion and check the number of rows affected
+                        // An exception will be thrown if the column is repeated
                         cmd.ExecuteNonQuery();
                     }
                 }
             }
-            catch(Exception ex)
+            catch (MySqlException e)
             {
-                Logger.Log($"Unable to save the order in the database.! {ex.Message}", LogLevel.Error); 
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Something went wrong while creating the order. {e.Message}");
+            }
+            catch (KeyNotFoundException e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
             }
         }
 
 
-   
 
-    //public List<Order> GetAllOrders()
-    //{
-            
-    //}
 
-    public List<Order> GetAllActiveOrders()
+        //public List<Order> GetAllOrders()
+        //{
+
+        //}
+
+        public List<Order> GetAllActiveOrders()
     {
             List<Order> orders = new List<Order>();
             try
