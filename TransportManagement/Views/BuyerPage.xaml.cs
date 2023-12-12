@@ -71,22 +71,20 @@ namespace TransportManagement
         private void acceptClientButton_Click(object sender, RoutedEventArgs e)
         {
 
-            if (ContractsList.SelectedItem != null)
-            {
-                // Access the selected item and perform your action
-                Contract selectedContract = (Contract)ContractsList.SelectedItem;
+            // Get the current contracts list shown in the table
+            List<Contract> currentContracts = ContractsList.ItemsSource.Cast<Contract>().ToList();
 
-                // Example: Display a message with the selected client's name
-                MessageBox.Show($"Accepted client: {selectedContract.ClientName}");
+            Buyer buyer = new Buyer();
 
-                // You can perform further actions based on the selected item
-                // For example, update the database, navigate to another page, etc.
-            }
-            else
+            // Process each selected contract and generate an order for it
+            foreach (Contract selectedContract in ContractsList.SelectedItems)
             {
-                // No item selected, display a message or perform appropriate action
-                MessageBox.Show("Please select a client before accepting.");
+                buyer.GenerateOrder(selectedContract);
+                currentContracts.Remove(selectedContract);
             }
+
+            // Update the contracts list in the ListView
+            ContractsList.ItemsSource = currentContracts;
         }
     }
 }
