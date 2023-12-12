@@ -1069,10 +1069,63 @@ namespace TransportManagement
 
 
 
-        //public List<Order> GetAllOrders()
-        //{
+        public List<Order> GetAllOrders()
+        {
+            List<Order> orders = new List<Order>();
+            try
+            {
+                string conString = ToString();
+                using (MySqlConnection con = new MySqlConnection(ConnectionString()))
+                {
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM Orders" +
+                         " INNER JOIN Clients ON Orders.ClientID = Clients.ClientID", con);
 
-        //}
+                    con.Open();
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Order newOrder = new Order
+                            {
+                                OrderID = int.Parse(rdr["OrderID"].ToString()),
+                                ClientName = rdr["ClientName"].ToString()
+                            };
+                            if (DateTime.TryParse(rdr["OrderDate"].ToString(), out DateTime dt))
+                            {
+                                newOrder.OrderCreationDate = dt;
+                            }
+
+                            newOrder.Origin = (City)Enum.Parse(typeof(City), rdr["Origin"].ToString(), true);
+                            newOrder.Destination = (City)Enum.Parse(typeof(City), rdr["Destination"].ToString(), true);
+                            newOrder.JobType = (JobType)int.Parse(rdr["JobType"].ToString());
+                            newOrder.VanType = (VanType)int.Parse(rdr["VanType"].ToString());
+                            newOrder.Quantity = int.Parse(rdr["Quantity"].ToString());
+                            newOrder.IsCompleted = int.Parse(rdr["IsCompleted"].ToString());
+                            if (DateTime.TryParse(rdr["OrderCreationDate"].ToString(), out DateTime dt2))
+                            {
+                                newOrder.OrderAcceptedDate = dt2;
+                            }
+
+                            if (DateTime.TryParse(rdr["OrderCompletedDate"].ToString(), out DateTime dt3))
+                            {
+                                newOrder.OrderCompletionDate = dt3;
+                            }
+
+                            orders.Add(newOrder);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Unable to fetch all orders. {e.Message}");
+            }
+
+            return orders;
+        }
 
         public List<Order> GetAllActiveOrders()
     {
