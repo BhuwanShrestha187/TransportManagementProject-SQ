@@ -16,6 +16,8 @@ using System.Data.SqlClient;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
+using static MySql.Data.MySqlClient.MySqlBackup;
+using System.IO.Abstractions;
 
 namespace TransportManagement
 {
@@ -892,27 +894,49 @@ namespace TransportManagement
         public bool ProcessBackUp(string backUpPath)
         {
             bool backup = false;
+            string mysqldumpPath = @"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe";
+            string command = $@"--host=localhost --user=root --password=Leoayan@24 --databases TMS --result-file={backUpPath}";
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = mysqldumpPath,
+                RedirectStandardInput = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = command
+            };
             try
             {
-                using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                // Start the process
+                using (Process process = new Process { StartInfo = psi })
                 {
-                    conn.Open();
-                    using(MySqlCommand cmd = new MySqlCommand())
+                    process.Start();
+
+                    // Wait for the process to exit
+                    process.WaitForExit();
+
+                    // Check for errors
+                    if (process.ExitCode == 0)
                     {
-                        cmd.Connection = conn;
-                        cmd.CommandText = $"BACKUP DATABASE TMS TO DISK = '{backUpPath}'";
-                        cmd.ExecuteNonQuery(); 
                         backup = true;
+                        Logger.Log("Backup COmpleted Successfully", LogLevel.Information);
+                    }
+                    else
+                    {
+                        backup = false;
+                        Logger.Log("Back up Failed", LogLevel.Error);
                     }
                 }
             }
-
             catch (Exception e)
             {
                 Logger.Log($"Back Up Failed!! {e.Message}", LogLevel.Error);
             }
             return backup;
         }
+
 
 
 

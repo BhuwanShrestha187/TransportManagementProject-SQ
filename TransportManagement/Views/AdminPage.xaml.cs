@@ -641,26 +641,19 @@ namespace TransportManagement
         }
         private void selectPathForBackUp_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+           FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if(fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                Filter = "SQL Backup Files (*.bak)|*.bak|All Files (*.*)|*.*",
-                DefaultExt = ".bak",
-                Title = "Select Backup Path",
-                FileName = "BackupFile" // Default file name
-            };
-
-            bool? result = saveFileDialog.ShowDialog();
-
-            if (result == true)
-            {
-                backupTextBox.Text = saveFileDialog.FileName;
+                backupTextBox.Text = fbd.SelectedPath;
             }
         }
         private void backUpButton_Click_1(object sender, RoutedEventArgs e)
         {
             string backupPath = backupTextBox.Text;
+            string backUpName = "TMSBackUp.sql"; 
+            string backUpFullPath = System.IO.Path.Combine(backupPath, backUpName);
 
-            if (string.IsNullOrWhiteSpace(backupPath))
+            if (string.IsNullOrWhiteSpace(backUpFullPath))
             {
                 System.Windows.MessageBox.Show("Please select a backup path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -668,7 +661,7 @@ namespace TransportManagement
 
             else
             {
-                bool result = admin.ProcessBackUp(backupPath);
+                bool result = admin.ProcessBackUp(backUpFullPath);
                 if(result == true)
                 {
                     System.Windows.MessageBox.Show("BackUp successful!!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
