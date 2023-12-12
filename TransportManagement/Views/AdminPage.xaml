@@ -166,8 +166,8 @@
                 <Label Content="Back Up Database" HorizontalAlignment="Center" Height="34" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
                 <Label Content="Back Up Path:" FontSize="15" VerticalAlignment="Top" Margin="10,40,542,0"/>
                 <TextBox x:Name="backupTextBox" Height="25" Width="450" Margin="115,45,87,238"/>
-                <Button x:Name="selectPathForBackUp" Content="Select Path" Height="30" Width="100" Margin="115,81,437,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15"/>
-                <Button x:Name="backUpButton" Content="Back Up" Height="30" Width="100" Margin="221,81,331,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15"/>
+                <Button x:Name="selectPathForBackUp" Content="Select Path" Height="30" Width="100" Margin="115,81,437,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Click="selectPathForBackUp_Click"/>
+                <Button x:Name="BackUpButton" Content="Back Up" Height="30" Width="100" Margin="221,81,331,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Click="backUpButton_Click_1"/>
             </Grid>
 
 

@@ -13,6 +13,9 @@ using System.Security.Cryptography;
 using GoogleEnum = Google.Protobuf.WellKnownTypes.Enum;
 using SystemEnum = System.Enum;
 using System.Data.SqlClient;
+using System.Windows;
+using System.Diagnostics;
+using System.IO;
 
 namespace TransportManagement
 {
@@ -883,6 +886,34 @@ namespace TransportManagement
 
             return -1; // Return a default value or handle the case where the ID is not found
         }
+
+
+
+        public bool ProcessBackUp(string backUpPath)
+        {
+            bool backup = false;
+            try
+            {
+                using(MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandText = $"BACKUP DATABASE TMS TO DISK = '{backUpPath}'";
+                        cmd.ExecuteNonQuery(); 
+                        backup = true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                Logger.Log($"Back Up Failed!! {e.Message}", LogLevel.Error);
+            }
+            return backup;
+        }
+
 
 
 

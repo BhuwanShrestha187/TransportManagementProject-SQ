@@ -81,12 +81,14 @@ namespace TransportManagement
             generalConfigGrid.Visibility = Visibility.Hidden; 
             logFileGrid.Visibility = Visibility.Hidden;
             manageDataGrid.Visibility = Visibility.Hidden;
+            backUpGrid.Visibility = Visibility.Hidden;  
          
 
             //Clear Background also
             logFileButton.Background = Brushes.WhiteSmoke;
             generalConfigButton.Background = Brushes.WhiteSmoke;
             manageDataButton.Background = Brushes.WhiteSmoke;
+            backupButton.Background = Brushes.WhiteSmoke;   
             
         }
 
@@ -620,9 +622,6 @@ namespace TransportManagement
                 Logger.Log("Error while updating the routes!!." ,LogLevel.Error);
 
             }
-
-
-
         }
 
 
@@ -630,10 +629,62 @@ namespace TransportManagement
 
 
         // *********************************************** Manage Button finished *************************************************************
+
+
+
+        //*********************************************** Back Up Created *********************************************************************
+
         private void backupButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
+            backUpGrid.Visibility = Visibility.Visible;
+        }
+        private void selectPathForBackUp_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "SQL Backup Files (*.bak)|*.bak|All Files (*.*)|*.*",
+                DefaultExt = ".bak",
+                Title = "Select Backup Path",
+                FileName = "BackupFile" // Default file name
+            };
+
+            bool? result = saveFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                backupTextBox.Text = saveFileDialog.FileName;
+            }
+        }
+        private void backUpButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            string backupPath = backupTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(backupPath))
+            {
+                System.Windows.MessageBox.Show("Please select a backup path.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            else
+            {
+                bool result = admin.ProcessBackUp(backupPath);
+                if(result == true)
+                {
+                    System.Windows.MessageBox.Show("BackUp successful!!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                else
+                {
+                    System.Windows.MessageBox.Show("BackUp not successful!!", "Success", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+            }
 
         }
+
+
+        //****************************************** Back Up Finished ******************************************************************
 
         /*
          *  Triggers when the updateDatabase button is clicked
@@ -768,6 +819,6 @@ namespace TransportManagement
             }
         }
 
-    
+        
     }
 }

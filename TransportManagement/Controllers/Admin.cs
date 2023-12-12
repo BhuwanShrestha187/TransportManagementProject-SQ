@@ -140,5 +140,12 @@ namespace TransportManagement
         }
 
 
+        public bool ProcessBackUp(string backupPath)
+        {
+            bool backUp = false; 
+            dal.ProcessBackUp(backupPath); return backUp;
+        }
+
+
     }
 }
