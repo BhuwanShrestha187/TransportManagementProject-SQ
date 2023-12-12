@@ -15,7 +15,9 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.IO;
-using System.Globalization; 
+using System.Globalization;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+
 namespace TransportManagement
 {
     /// <summary>
@@ -169,10 +171,12 @@ namespace TransportManagement
             //For the related UI as well
             updateRateGrid.Visibility = Visibility.Hidden;
             updateCarrierGrid.Visibility = Visibility.Hidden;
+            updateRouteGrid.Visibility = Visibility.Hidden; 
 
             //For Button background
             rateButton.Background = Brushes.WhiteSmoke;
             carrierButton.Background = Brushes.WhiteSmoke;
+            routeButton.Background = Brushes.WhiteSmoke;
 
         }
         private void DisplayRates()
@@ -548,13 +552,49 @@ namespace TransportManagement
         }
 
 
-
+        //************************ Update Route from here *****************************
         private void routeButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetManageButtonUI();
+            routeButton.Background = Brushes.LightSkyBlue;
+            updateRouteGrid.Visibility = Visibility.Visible;
+            Logger.Log("Route Button clicked", LogLevel.Information);
+            LoadRouteData();
 
         }
 
-     
+        private void RouteDatabase_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            clearButton_Click(sender, e);
+
+            // If no option is selected
+            if (RouteDatabase.SelectedItems.Count == 0)
+            {
+                updateRouteButton.Visibility = Visibility.Hidden;
+
+                RouteDatabase.ItemsSource = new List<Route>();
+            }
+            else
+            {
+                updateRouteButton.Visibility = Visibility.Visible;
+
+                Route selectedRoute = (Route)RouteDatabase.SelectedItem;
+
+                destinationTextBox.Text = selectedRoute.Destination.ToString();
+                distanceTextBox.Text = selectedRoute.Distance.ToString();
+                timeTextBox.Text = selectedRoute.Time.ToString();
+                westTextBox.Text = selectedRoute.West.ToString();
+                eastTextBox.Text = selectedRoute.East.ToString();
+            }
+        }
+        private void LoadRouteData()
+        {
+            List<Route> routeData = admin.GetRouteDataFromDatabase();
+            RouteDatabase.ItemsSource = routeData;
+        }
+
+
+
 
 
 
@@ -667,6 +707,35 @@ namespace TransportManagement
             }
         }
 
-        
+        private void downloadLogFile_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    string selectedFolder = dialog.SelectedPath;
+
+                    try
+                    {
+                        // Construct the full path for the log file in the selected folder
+                        string filePath = System.IO.Path.Combine(selectedFolder, "logFile.txt");
+
+                        // Save the contents of the TextBox to the selected file
+                        File.WriteAllText(filePath, logFileContentsTextBlock.Text);
+
+                        // Optionally, display a success message or perform other actions
+                        System.Windows.MessageBox.Show("Log file saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle exceptions (e.g., file I/O errors)
+                        System.Windows.MessageBox.Show($"Error saving log file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
+            }
+        }
     }
 }

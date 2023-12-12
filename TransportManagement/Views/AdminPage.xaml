@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="AdminPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
         WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
+
+  
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
@@ -57,7 +59,8 @@
             </Grid>
 
             <Grid x:Name="logFileGrid" Grid.Column="3" Visibility="Hidden" Margin="10 0 0 0" Background="WhiteSmoke">
-                <TextBox x:Name="logFileContentsTextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Background="White" Margin=" 15"/>
+                <TextBox x:Name="logFileContentsTextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Background="White" Margin="39,15,48,52"/>
+                <Button x:Name="downloadLogFile" Height="20" Width="120"  Content="Download Log" Margin="484,267,48,21" Click="downloadLogFile_Click"/>
             </Grid>
 
             <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Visible" Margin="12,0,-2,0" Background="WhiteSmoke">
@@ -130,24 +133,24 @@
                     </Grid>
 
                     <Grid x:Name="updateRouteGrid" Visibility="Visible">
-                        <ListView x:Name="RouteDatabase" Margin="10,10,20,90"  SelectionMode="Single" PreviewMouseLeftButtonUp="RouteDatabase_PreviewMouseLeftButtonUp">
+                        <ListView x:Name="RouteDatabase" Margin="71,10,96,90"  SelectionMode="Single" PreviewMouseLeftButtonUp="RouteDatabase_PreviewMouseLeftButtonUp">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Destination" Width="160" DisplayMemberBinding="{Binding Destination}" />
-                                    <GridViewColumn Header="Km's" Width="60" DisplayMemberBinding="{Binding Distance}" />
+                                    <GridViewColumn Header="Km's" Width="50" DisplayMemberBinding="{Binding Distance}" />
                                     <GridViewColumn Header="Time (h)" Width="60" DisplayMemberBinding="{Binding Time}" />
-                                    <GridViewColumn Header="West" Width="160" DisplayMemberBinding="{Binding West}" />
-                                    <GridViewColumn Header="East" Width="160" DisplayMemberBinding="{Binding East}" />
+                                    <GridViewColumn Header="West" Width="100" DisplayMemberBinding="{Binding West}" />
+                                    <GridViewColumn Header="East" Width="100" DisplayMemberBinding="{Binding East}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
 
                         <Label Content="Destination" Width="70" Margin="48,156,514,57" RenderTransformOrigin="0.763,0.614"/>
                         <TextBox x:Name="destinationTextBox" Height="20" Margin="125,161,377,57"/>
-                        <TextBox x:Name="destinationTextBox_Copy" Height="20" Margin="125,185,377,33"/>
-                        <TextBox x:Name="destinationTextBox_Copy1" Height="20" Margin="125,208,377,10"/>
-                        <TextBox x:Name="destinationTextBox_Copy2" Height="20" Margin="380,161,122,57"/>
-                        <TextBox x:Name="destinationTextBox_Copy3" Height="20" Margin="380,185,122,33"/>
+                        <TextBox x:Name="distanceTextBox" Height="20" Margin="125,185,377,33"/>
+                        <TextBox x:Name="timeTextBox" Height="20" Margin="125,208,377,10"/>
+                        <TextBox x:Name="eastTextBox" Height="20" Margin="380,161,122,57"/>
+                        <TextBox x:Name="westTextBox" Height="20" Margin="380,185,122,33"/>
                         <Label Content="Distance" Width="70" Margin="48,180,514,33" RenderTransformOrigin="0.763,0.614"/>
                         <Label Content="Time" Width="70" Margin="48,203,514,10" RenderTransformOrigin="0.763,0.614"/>
                         <Label Content="West" Width="70" Margin="339,181,223,32" RenderTransformOrigin="0.763,0.614"/>

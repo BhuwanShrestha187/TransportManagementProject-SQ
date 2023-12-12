@@ -1,40 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TransportManagement
 {
-    public class Route
+    public class Route : INotifyPropertyChanged
     {
-        public City Destination { set; get; }
-
-        public int Distance { set; get; }
-
-        public double Time { set; get; }
-
-        public City West { set; get; }
-
-  
-        public Route WestPtr { set; get; }
-
-        public City East { set; get; }
-
-   
-        public Route EastPtr { set; get; }
-
-        public Route()
-        { }
-
-   
-        public Route(City newDestination, int newDistance, double newTime, City newWest, City newEast)
+        private string destination;
+        public string Destination
         {
-            Destination = newDestination;
-            Distance = newDistance;
-            Time = newTime;
-            West = newWest;
-            East = newEast;
+            get { return destination; }
+            set { destination = value; OnPropertyChanged(nameof(Destination)); }
         }
+
+        private int distance;
+        public int Distance
+        {
+            get { return distance; }
+            set { distance = value; OnPropertyChanged(nameof(Distance)); }
+        }
+
+        private decimal time;
+        public decimal Time
+        {
+            get { return time; }
+            set { time = value; OnPropertyChanged(nameof(Time)); }
+        }
+
+        private string west;
+        public string West
+        {
+            get { return west; }
+            set { west = value; OnPropertyChanged(nameof(West)); }
+        }
+
+        private string east;
+        public string East
+        {
+            get { return east; }
+            set { east = value; OnPropertyChanged(nameof(East)); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
+
+   
 }

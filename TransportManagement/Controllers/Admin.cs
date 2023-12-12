@@ -124,5 +124,14 @@ namespace TransportManagement
         {
             return dal.CreateCarrier(carrier);
         }
+
+
+
+        public List<Route> GetRouteDataFromDatabase()
+        {
+            List<Route> routes= dal.GetRouteDataFromDatabase();
+            return routes;
+        }
+
     }
 }

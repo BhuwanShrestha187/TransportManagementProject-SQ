@@ -10,6 +10,10 @@ using System.Linq.Expressions;
 using System.Windows.Media.Media3D;
 using System.Security.Cryptography;
 
+using GoogleEnum = Google.Protobuf.WellKnownTypes.Enum;
+using SystemEnum = System.Enum;
+using System.Data.SqlClient;
+
 namespace TransportManagement
 {
     public enum UserRole
@@ -773,6 +777,49 @@ namespace TransportManagement
         }
 
 
+      
+        public List<Route> GetRouteDataFromDatabase()
+        {
+            string query = "SELECT Destination, Distance, Time, West, East FROM Route";
+            Logger.Log("GetRouteDatabase called", LogLevel.Information);
+            List<Route> routeData = new List<Route>();
+
+            try
+            {
+
+                using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+                {
+                    connection.Open();
+
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Route routeItem = new Route
+                                {
+                                    Destination = reader["Destination"].ToString(),
+                                    Distance = Convert.ToInt32(reader["Distance"]),
+                                    Time = Convert.ToDecimal(reader["Time"]),
+                                    West = reader["West"].ToString(),
+                                    East = reader["East"].ToString()
+                                };
+
+                                routeData.Add(routeItem);
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Logger.Log($"Could not retrieve the routes. {e.Message}", LogLevel.Error);
+            }
+
+            return routeData;
+        }
 
 
 
