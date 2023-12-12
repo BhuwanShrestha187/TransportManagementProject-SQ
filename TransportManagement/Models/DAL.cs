@@ -937,6 +937,35 @@ namespace TransportManagement
             return backup;
         }
 
+        public void CreateClient(Client client )
+        {
+            string query = "INSERT INTO Clients (ClientName) VALUES (@ClientName)";
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                       
+                        cmd.Parameters.AddWithValue("@ClientName", client.ClientName);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Client {client.ClientName} already exists.");
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message, LogLevel.Error);
+                throw;
+            }
+        }
+
 
 
 

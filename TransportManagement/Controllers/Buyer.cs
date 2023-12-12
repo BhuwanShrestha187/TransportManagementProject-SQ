@@ -8,6 +8,7 @@ namespace TransportManagement
 { 
     public class Buyer
     {
+        DAL dal = new DAL();
         public List<Contract> GetContractsFromMarketPlaceDatabase()
         {
             List<Contract> list = new List<Contract>();
@@ -21,13 +22,22 @@ namespace TransportManagement
             Order order = new Order
             {
                 ClientName = contract.ClientName,
-                JobType = contract.JobType,
-                Quantity = contract.Quantity,
                 Origin = contract.Origin,
                 Destination = contract.Destination,
+                JobType = contract.JobType,
+                Quantity = contract.Quantity,
                 VanType = contract.VanType,
-                // Add any other necessary properties for the order
+                OrderCreationDate = DateTime.Now,
+                OrderAcceptedDate = DateTime.Now,
+                InvoiceGenerated = 0, // Assuming 0 means false
+                IsCompleted = 0,   // Assuming 0 means false
             };
+
+          
+
+            
+
+
         }
     }
 }
