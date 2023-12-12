@@ -8,7 +8,7 @@
         Title="AdminPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
         WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
 
-  
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
@@ -63,7 +63,7 @@
                 <Button x:Name="downloadLogFile" Height="20" Width="120"  Content="Download Log" Margin="484,267,48,21" Click="downloadLogFile_Click"/>
             </Grid>
 
-            <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Visible" Margin="12,0,-2,0" Background="WhiteSmoke">
+            <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Hidden" Margin="12,0,-2,0" Background="WhiteSmoke">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition/>
@@ -132,7 +132,7 @@
                         </ListView>
                     </Grid>
 
-                    <Grid x:Name="updateRouteGrid" Visibility="Visible">
+                    <Grid x:Name="updateRouteGrid" Visibility="Hidden">
                         <ListView x:Name="RouteDatabase" Margin="71,10,96,90"  SelectionMode="Single" PreviewMouseLeftButtonUp="RouteDatabase_PreviewMouseLeftButtonUp">
                             <ListView.View>
                                 <GridView>
@@ -149,18 +149,29 @@
                         <TextBox x:Name="destinationTextBox" Height="20" Margin="125,161,377,57"/>
                         <TextBox x:Name="distanceTextBox" Height="20" Margin="125,185,377,33"/>
                         <TextBox x:Name="timeTextBox" Height="20" Margin="125,208,377,10"/>
-                        <TextBox x:Name="eastTextBox" Height="20" Margin="380,161,122,57"/>
-                        <TextBox x:Name="westTextBox" Height="20" Margin="380,185,122,33"/>
+                        <TextBox x:Name="eastTextBox" Height="20" Margin="406,161,96,57"/>
+                        <TextBox x:Name="westTextBox" Height="20" Margin="406,185,96,33"/>
                         <Label Content="Distance" Width="70" Margin="48,180,514,33" RenderTransformOrigin="0.763,0.614"/>
                         <Label Content="Time" Width="70" Margin="48,203,514,10" RenderTransformOrigin="0.763,0.614"/>
-                        <Label Content="West" Width="70" Margin="339,181,223,32" RenderTransformOrigin="0.763,0.614"/>
-                        <Label Content="East" Width="70" Margin="340,157,222,56" RenderTransformOrigin="0.763,0.614"/>
-                        <Button x:Name="clearRouteFieldButton" Content="Clear" Width="70" Margin="440,216,122,-2"/>
-                        <Button x:Name="updateRouteButton" Content="Update" Width="70" Margin="513,216,49,-2"/>
+                        <Label Content="West" Width="70" Margin="362,181,200,32" RenderTransformOrigin="0.763,0.614"/>
+                        <Label Content="East" Width="70" Margin="362,157,200,56" RenderTransformOrigin="0.763,0.614"/>
+                        <Button x:Name="clearRouteFieldButton" Content="Clear" Width="70" Margin="392,216,170,-2"/>
+                        <Button x:Name="updateRouteButton" Content="Update" Width="70" Margin="467,216,95,-2" Click="updateRouteButton_Click"/>
 
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Grid x:Name="backUpGrid" Grid.Column="3" Visibility="Visible" Margin="10 0 0 0" Background="WhiteSmoke">
+                <Label Content="Back Up Database" HorizontalAlignment="Center" Height="34" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
+                <Label Content="Back Up Path:" FontSize="15" VerticalAlignment="Top" Margin="10,40,542,0"/>
+                <TextBox x:Name="backupTextBox" Height="25" Width="450" Margin="115,45,87,238"/>
+                <Button x:Name="selectPathForBackUp" Content="Select Path" Height="30" Width="100" Margin="115,81,437,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15"/>
+                <Button x:Name="backUpButton" Content="Back Up" Height="30" Width="100" Margin="221,81,331,197" FontFamily="Bahnschrift SemiCondensed" FontSize="15"/>
+            </Grid>
+
+
+
 
         </Grid>
 

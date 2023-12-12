@@ -593,7 +593,37 @@ namespace TransportManagement
             RouteDatabase.ItemsSource = routeData;
         }
 
+        private void updateRouteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Retrieve values from text boxes
+            string destination = destinationTextBox.Text;
+            int distance = int.Parse(distanceTextBox.Text);
+            decimal time = decimal.Parse(timeTextBox.Text);
+            string west = westTextBox.Text;
+            string east = eastTextBox.Text;
 
+            // Update the database
+
+            bool result = admin.UpdateRouteInDatabase(destination, distance, time, west, east);
+
+            if(result == true)
+            {
+                System.Windows.MessageBox.Show("Routes data is updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Logger.Log("Route Database Updated Successfully!!", LogLevel.Information);
+                // Refresh the ListView or any other control displaying the data
+                LoadRouteData();
+            }    
+
+            else
+            {
+                System.Windows.MessageBox.Show("Routes data cannot be updated!", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Log("Error while updating the routes!!." ,LogLevel.Error);
+
+            }
+
+
+
+        }
 
 
 
@@ -737,5 +767,7 @@ namespace TransportManagement
 
             }
         }
+
+    
     }
 }

@@ -823,6 +823,70 @@ namespace TransportManagement
 
 
 
+        public bool UpdateRouteInDatabase(string destination, int distance, decimal time, string west, string east)
+        {
+            bool result = false;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+                {
+                    connection.Open();
+
+                    // Assuming your Route table has a primary key column named ID, and you have the ID of the record you want to update
+                    // Replace IDColumnName with your actual primary key column name
+                    int routeId = GetRouteIdFromDatabase(destination);
+
+                    string query = "UPDATE Route SET Destination = @Destination, Distance = @Distance, Time = @Time, West = @West, East = @East WHERE RouteID = @RouteId";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Destination", destination);
+                        command.Parameters.AddWithValue("@Distance", distance);
+                        command.Parameters.AddWithValue("@Time", time);
+                        command.Parameters.AddWithValue("@West", west);
+                        command.Parameters.AddWithValue("@East", east);
+                        command.Parameters.AddWithValue("@RouteId", routeId);
+
+                        command.ExecuteNonQuery();
+                        result = true;
+                    }
+                }
+            }
+            catch(Exception e )
+            {
+                Logger.Log($"Error while updating the routes data!! {e.Message}", LogLevel.Error);
+            }
+            return result;
+        }
+
+        public int GetRouteIdFromDatabase(string destination)
+        {
+       
+            using (MySqlConnection connection = new MySqlConnection(ConnectionString()))
+            {
+                connection.Open();
+
+                string query = "SELECT RouteID FROM Route WHERE Destination = @Destination";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Destination", destination);
+                    var result = command.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                    {
+                        return Convert.ToInt32(result);
+                    }
+                }
+            }
+
+            return -1; // Return a default value or handle the case where the ID is not found
+        }
+
+
+
+
 
 
 

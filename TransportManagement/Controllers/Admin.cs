@@ -133,5 +133,12 @@ namespace TransportManagement
             return routes;
         }
 
+        public bool UpdateRouteInDatabase(string destination, int distance, decimal time, string west, string east)
+        {
+           bool result =  dal.UpdateRouteInDatabase(destination,distance, time, west, east);
+            return result;
+        }
+
+
     }
 }
