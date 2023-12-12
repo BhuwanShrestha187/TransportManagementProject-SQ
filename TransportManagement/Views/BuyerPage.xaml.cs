@@ -41,6 +41,9 @@ namespace TransportManagement
         {
             marketPlaceGrid.Visibility = Visibility.Hidden;
             marketPlaceButton.Background = Brushes.WhiteSmoke;
+
+            ordersGrid.Visibility = Visibility.Hidden;  
+            ordersButton.Background = Brushes.WhiteSmoke;   
             
         }
 
@@ -85,6 +88,42 @@ namespace TransportManagement
 
             // Update the contracts list in the ListView
             ContractsList.ItemsSource = currentContracts;
+        }
+
+        //************************************ Order Grid Started **********************************************
+        private void ordersButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetUI();
+            ordersGrid.Visibility = Visibility.Visible; 
+            ordersButton.Background = Brushes.LightSkyBlue;
+            allOrdersButton.Background = Brushes.LightSkyBlue;
+        }
+
+        private void ViewOrders()
+        {
+            List<Order> orders = new List<Order>();
+            orders = buyer.GetOrders("All");
+            
+        }
+
+        private void allOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void pendingOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void completedOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void generateOrdersButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

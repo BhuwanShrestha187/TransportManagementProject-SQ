@@ -50,8 +50,24 @@ namespace TransportManagement
             }
 
             return order;
+        }
 
+        public void GetOrdersFromDatabase(string quantity)
+        {
+            if (quantity == "All")
+            {
+                dal.GetAllOrders();
+            }
 
+            if(quantity == "Active")
+            {
+                dal.GetAllActiveOrders(); 
+            }
+
+            if(quantity == "Completed")
+            {
+                dal.GetCompletedOrders();
+            }
         }
     }
 }
