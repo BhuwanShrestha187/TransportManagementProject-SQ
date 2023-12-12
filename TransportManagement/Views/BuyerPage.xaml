@@ -33,7 +33,7 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                 <Button x:Name="Clients" Background="WhiteSmoke" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
             </StackPanel>
 
-            <Grid x:Name="marketPlaceGrid" Grid.Column="3" Visibility="Visible">
+            <Grid x:Name="marketPlaceGrid" Grid.Column="3" Visibility="Hidden">
                 <ListView x:Name="ContractsList" Margin="84,22,84,74" SelectionMode="Single">
                     <ListView.View>
                         <GridView x:Name="ContractsListGrid">
@@ -49,6 +49,30 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
 
                 <Button x:Name="acceptClientButton" Content="Accept" Width="80" Height="20"  FontFamily="Bahnschrift SemiCondensed" FontSize="16" Margin="508,239,84,49" Click="acceptClientButton_Click"/>
 
+            </Grid>
+
+            <Grid x:Name="ordersGrid" Grid.Column="2" Visibility="Visible" Margin="1,0,-1,0">
+                <ListView x:Name="OrdersList" Margin="72,7,72,65" SelectionChanged="Selection_Changed">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding OrderID}" />
+                            <GridViewColumn Header="Client Name" Width="95" DisplayMemberBinding="{Binding ClientName}" />
+                            <GridViewColumn Header="Accepted Date" Width="90" DisplayMemberBinding="{Binding OrderAcceptedDate}" />
+                            <GridViewColumn Header="Origin" Width="80" DisplayMemberBinding="{Binding Origin}" />
+                            <GridViewColumn Header="Destination" Width="70" DisplayMemberBinding="{Binding Destination}" />
+                            <GridViewColumn Header="Job Type" Width="55" DisplayMemberBinding="{Binding JobType}" />
+                            <GridViewColumn Header="Van Type" Width="55" DisplayMemberBinding="{Binding VanType}" />
+                            <GridViewColumn Header="Qty" Width="40" DisplayMemberBinding="{Binding Quantity}" />
+                            <GridViewColumn Header="Status" Width="70" DisplayMemberBinding="{Binding IsCompleted}" />
+                            <GridViewColumn Header="Creation Date" Width="70" DisplayMemberBinding="{Binding OrderCreationDate}" />
+                            <GridViewColumn Header="Completion" Width="70" DisplayMemberBinding="{Binding OrderCompletionDate}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <Button x:Name="allOrdersButton" Content="All Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="72,248,497,40"/>
+                <Button x:Name="pendingOrders" Content="Pending Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="177,248,379,40"/>
+                <Button x:Name="completedOrders" Content="Completed Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="296,248,256,40"/>
             </Grid>
         </Grid>
     </Grid>
