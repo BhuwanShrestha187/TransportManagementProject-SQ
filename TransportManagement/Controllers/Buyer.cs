@@ -44,22 +44,25 @@ namespace TransportManagement
 
             return order;
         }
-        public void GetOrdersFromDatabase(string quantity)
+        public List<Order> GetOrdersFromDatabase(string quantity)
         {
-            //if (quantity == "All")
-            //{
-            //    dal.GetAllOrders();
-            //}
+            List<Order> orders = new List<Order>();
+            if (quantity == "All")
+            {
+                dal.GetAllOrders();
+            }
 
             if (quantity == "Active")
             {
                 dal.GetAllActiveOrders();
             }
 
-            //if (quantity == "Completed")
-            //{
-            //    dal.GetCompletedOrders();
-            //}
+            if (quantity == "Completed")
+            {
+                dal.GetCompletedOrders();
+            }
+
+            return orders;
         }
     }
 }
