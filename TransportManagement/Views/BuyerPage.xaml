@@ -28,9 +28,9 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
             <StackPanel Grid.Column="2"/>
 
             <StackPanel Grid.Column="0">
-                <Button x:Name="marketPlaceButton" Content="Market Place" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="marketPlaceButton_Click" />
-                <Button x:Name="ordersButton" Content="Orders" Height="45" FontSize="16"  BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
-                <Button x:Name="Clients" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
+                <Button x:Name="marketPlaceButton" Background="WhiteSmoke" Content="Market Place" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="marketPlaceButton_Click" />
+                <Button x:Name="ordersButton" Background="WhiteSmoke" Content="Orders" Height="45" FontSize="16"  BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
+                <Button x:Name="Clients" Background="WhiteSmoke" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
             </StackPanel>
 
             <Grid x:Name="marketPlaceGrid" Grid.Column="3" Visibility="Visible">
@@ -46,6 +46,8 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                         </GridView>
                     </ListView.View>
                 </ListView>
+
+                <Button x:Name="acceptClientButton" Content="Accept" Width="80" Height="20"  FontFamily="Bahnschrift SemiCondensed" FontSize="16" Margin="508,239,84,49"/>
 
             </Grid>
         </Grid>

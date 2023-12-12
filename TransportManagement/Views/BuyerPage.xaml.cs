@@ -22,6 +22,7 @@ namespace TransportManagement
         public BuyerPage()
         {
             InitializeComponent();
+            DisplayMarketPlaceGrid(); 
         }
 
         private void LoginPage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -32,9 +33,32 @@ namespace TransportManagement
             }
         }
 
+        private void ResetUI()
+        {
+            marketPlaceGrid.Visibility = Visibility.Hidden;
+            marketPlaceButton.Background = Brushes.WhiteSmoke;
+            
+        }
+
+
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void DisplayMarketPlaceGrid()
+        {
+            marketPlaceGrid.Visibility = Visibility.Visible;
+            marketPlaceButton.Background = Brushes.LightSkyBlue; 
+        }
+        //***************************************** Working with Marketplace Grid ********************************************
+
         private void marketPlaceButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
+            DisplayMarketPlaceGrid(); 
 
         }
+
     }
 }
