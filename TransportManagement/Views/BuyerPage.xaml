@@ -18,13 +18,14 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
             <Button x:Name="closeButton" Content="X" Foreground="White" VerticalAlignment="Top" Width="30" Margin="770 -148 0 0" BorderThickness="0" Background="Black" FontSize="17" FontWeight="Bold" Click="closeButton_Click"/>
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="125"/>
-                
                 <ColumnDefinition Width="1"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" Background="Black"/>
+            <StackPanel Grid.Column="1" Background="Black"></StackPanel>
+            <StackPanel Grid.Column="2"/>
 
             <StackPanel Grid.Column="0">
                 <Button x:Name="marketPlaceButton" Content="Market Place" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="marketPlaceButton_Click" />
@@ -32,8 +33,20 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                 <Button x:Name="Clients" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" />
             </StackPanel>
 
-            <Grid x:Name="marketPlaceGrid" Grid.Column="2" Visibility="Visible">
-                
+            <Grid x:Name="marketPlaceGrid" Grid.Column="3" Visibility="Visible">
+                <ListView x:Name="ContractsList" Margin="84,22,84,74" SelectionMode="Single">
+                    <ListView.View>
+                        <GridView x:Name="ContractsListGrid">
+                            <GridViewColumn Header="Client Name" Width="120" DisplayMemberBinding="{Binding ClientName}" />
+                            <GridViewColumn Header="Destination" Width="100" DisplayMemberBinding="{Binding Destination}" />
+                            <GridViewColumn Header="Job Type" Width="70" DisplayMemberBinding="{Binding JobType}" />
+                            <GridViewColumn Header="Origin" Width="70" DisplayMemberBinding="{Binding Origin}" />
+                            <GridViewColumn Header="Quantity" Width="70" DisplayMemberBinding="{Binding Quantity}" />
+                            <GridViewColumn Header="Van Type" Width="70" DisplayMemberBinding="{Binding VanType}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
             </Grid>
         </Grid>
     </Grid>

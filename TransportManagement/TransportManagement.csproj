@@ -134,6 +134,7 @@
     <Compile Include="Models\Carrier.cs" />
     <Compile Include="Models\CarrierCity.cs" />
     <Compile Include="Models\Contract.cs" />
+    <Compile Include="Models\ContractMarketplace.cs" />
     <Compile Include="Models\DAL.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Models\Trip.cs" />
