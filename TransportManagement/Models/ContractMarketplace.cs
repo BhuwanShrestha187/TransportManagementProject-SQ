@@ -27,7 +27,7 @@ namespace TransportManagement
         }
         public string ConnectMarketPlace()
         {
-            return $"SERVER={MarketPlaceServer};DATABASE={MarketPlacePort};PORT={MarketPlacePort};UID={MarketPlaceUID};PASSWORD={MarketPlacePassword}";
+            return $"SERVER={MarketPlaceServer};DATABASE={MarketPlaceDBName};PORT={MarketPlacePort};UID={MarketPlaceUID};PASSWORD={MarketPlacePassword}";
         }
 
         public List<Contract> GetContracts()
@@ -35,8 +35,8 @@ namespace TransportManagement
             List<Contract> contracts = new List<Contract>();
             try
             {
-                string conString = ToString();
-                using (MySqlConnection con = new MySqlConnection(conString))
+               
+                using (MySqlConnection con = new MySqlConnection(ConnectMarketPlace()))
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM Contract", con);
                     con.Open();
@@ -60,9 +60,9 @@ namespace TransportManagement
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                Logger.Log($"Cannot Connect to the MarketPlace Database: {e.Message}", LogLevel.Error);
             }
 
             return contracts;

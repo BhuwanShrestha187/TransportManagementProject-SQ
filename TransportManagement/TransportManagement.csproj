@@ -131,6 +131,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controllers\Admin.cs" />
+    <Compile Include="Controllers\Buyer.cs" />
     <Compile Include="Models\Carrier.cs" />
     <Compile Include="Models\CarrierCity.cs" />
     <Compile Include="Models\Contract.cs" />

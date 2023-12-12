@@ -47,7 +47,7 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                     </ListView.View>
                 </ListView>
 
-                <Button x:Name="acceptClientButton" Content="Accept" Width="80" Height="20"  FontFamily="Bahnschrift SemiCondensed" FontSize="16" Margin="508,239,84,49"/>
+                <Button x:Name="acceptClientButton" Content="Accept" Width="80" Height="20"  FontFamily="Bahnschrift SemiCondensed" FontSize="16" Margin="508,239,84,49" Click="acceptClientButton_Click"/>
 
             </Grid>
         </Grid>
