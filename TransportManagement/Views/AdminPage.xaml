@@ -60,7 +60,7 @@
                 <TextBox x:Name="logFileContentsTextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"  Background="White" Margin=" 15"/>
             </Grid>
 
-            <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Visible" Margin="10,0,0,0" Background="WhiteSmoke">
+            <Grid x:Name="manageDataGrid" Grid.Column="3" Visibility="Visible" Margin="12,0,-2,0" Background="WhiteSmoke">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition/>
@@ -96,17 +96,17 @@
                         <Label Content="Departure" Margin="381,140,181,75"/>
                         <Label Content="FTLAval" Margin="381,161,181,54"/>
                         <Label Content="LTLAval" Margin="381,183,181,32"/>
-                        
+
 
                         <TextBox x:Name="CarrierName" Height="20" Margin="181,144,306,74"/>
                         <TextBox x:Name="FTLRate" Height="20" Margin="181,208,306,10"/>
                         <TextBox x:Name="LTLRate" Height="20" Margin="181,186,306,32"/>
                         <TextBox x:Name="Reefer" Height="20" Margin="181,165,306,53"/>
-                        
+
                         <TextBox x:Name="Departure" Height="20" Margin="462,144,25,74"/>
                         <TextBox x:Name="FTLAval" Height="20" Margin="462,166,25,52"/>
                         <TextBox x:Name="LTLAval" Height="20" Margin="462,188,25,30"/>
-  
+
                         <ListView x:Name="CarrierDatabaseList" Margin="18,-1,306,96" SelectionMode="Single" SelectionChanged="CarriersFieldsHandler" BorderThickness="0" >
                             <ListView.View>
                                 <GridView>
@@ -141,14 +141,26 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
-                        
-                        <TextBox
+
+                        <Label Content="Destination" Width="70" Margin="48,156,514,57" RenderTransformOrigin="0.763,0.614"/>
+                        <TextBox x:Name="destinationTextBox" Height="20" Margin="125,161,377,57"/>
+                        <TextBox x:Name="destinationTextBox_Copy" Height="20" Margin="125,185,377,33"/>
+                        <TextBox x:Name="destinationTextBox_Copy1" Height="20" Margin="125,208,377,10"/>
+                        <TextBox x:Name="destinationTextBox_Copy2" Height="20" Margin="380,161,122,57"/>
+                        <TextBox x:Name="destinationTextBox_Copy3" Height="20" Margin="380,185,122,33"/>
+                        <Label Content="Distance" Width="70" Margin="48,180,514,33" RenderTransformOrigin="0.763,0.614"/>
+                        <Label Content="Time" Width="70" Margin="48,203,514,10" RenderTransformOrigin="0.763,0.614"/>
+                        <Label Content="West" Width="70" Margin="339,181,223,32" RenderTransformOrigin="0.763,0.614"/>
+                        <Label Content="East" Width="70" Margin="340,157,222,56" RenderTransformOrigin="0.763,0.614"/>
+                        <Button x:Name="clearRouteFieldButton" Content="Clear" Width="70" Margin="440,216,122,-2"/>
+                        <Button x:Name="updateRouteButton" Content="Update" Width="70" Margin="513,216,49,-2"/>
+
                     </Grid>
                 </Grid>
             </Grid>
 
         </Grid>
-        
+
 
 
 
