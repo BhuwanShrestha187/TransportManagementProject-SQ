@@ -41,9 +41,11 @@ namespace TransportManagement
         {
             marketPlaceGrid.Visibility = Visibility.Hidden;
             marketPlaceButton.Background = Brushes.WhiteSmoke;
+            clientsButton.Background = Brushes.WhiteSmoke;
 
             ordersGrid.Visibility = Visibility.Hidden;  
-            ordersButton.Background = Brushes.WhiteSmoke;   
+            ordersButton.Background = Brushes.WhiteSmoke; 
+            clientsGrid.Visibility = Visibility.Hidden;
             
         }
 
@@ -145,7 +147,12 @@ namespace TransportManagement
         // ********************** Working WIth Clients *****************************
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
+            clientsButton.Background = Brushes.LightSkyBlue;
+            clientsGrid.Visibility = Visibility.Visible;
 
+            List<Client> clientList = buyer.GetClientsFromDatabase(1);
+            ClientsList.ItemsSource = clientList;
         }
     }
 }

@@ -30,7 +30,7 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
             <StackPanel Grid.Column="0">
                 <Button x:Name="marketPlaceButton" Background="WhiteSmoke" Content="Market Place" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="marketPlaceButton_Click" />
                 <Button x:Name="ordersButton" Background="WhiteSmoke" Content="Orders" Height="45" FontSize="16"  BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="ordersButton_Click" />
-                <Button x:Name="Clients" Background="WhiteSmoke" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="Clients_Click" />
+                <Button x:Name="clientsButton" Background="WhiteSmoke" Content="Clients" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="Clients_Click" />
             </StackPanel>
 
             <Grid x:Name="marketPlaceGrid" Grid.Column="3" Visibility="Hidden">
