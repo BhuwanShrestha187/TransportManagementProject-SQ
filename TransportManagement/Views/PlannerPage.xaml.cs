@@ -103,5 +103,12 @@ namespace TransportManagement
         {
             Refresh_Orders();
         }
+
+        private void Selection_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            Order currentOrder = (Order)OrdersList.SelectedItem;
+           
+         
+        }
     }
 }
