@@ -33,7 +33,7 @@
 
             </StackPanel>
             <Grid x:Name="ordersGrid" Grid.Column="3" Visibility="Visible">
-                <Label Content="Orders List" HorizontalAlignment="Center" Margin="0,-6,0,292" Width="672" Background="SkyBlue" FontWeight="Bold" />
+                <Label Content="Orders List" HorizontalAlignment="Center" Margin="0,-6,0,264" Width="672" Height="50" Background="SkyBlue" FontWeight="Bold" />
                 <ListView x:Name="OrdersList" Margin="0,22,0,54" SelectionMode="Single">
                     <ListView.View>
                         <GridView>

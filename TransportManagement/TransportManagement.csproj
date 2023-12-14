@@ -132,6 +132,7 @@
     </Compile>
     <Compile Include="Controllers\Admin.cs" />
     <Compile Include="Controllers\Buyer.cs" />
+    <Compile Include="Controllers\Planner.cs" />
     <Compile Include="Models\Carrier.cs" />
     <Compile Include="Models\CarrierCity.cs" />
     <Compile Include="Models\Client.cs" />

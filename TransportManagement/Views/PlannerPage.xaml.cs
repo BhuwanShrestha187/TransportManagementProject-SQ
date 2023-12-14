@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,9 +21,12 @@ namespace TransportManagement
     /// </summary>
     public partial class PlannerPage : Window
     {
+        DAL dal = new DAL(); 
+        Planner planner = new Planner();
         public PlannerPage()
         {
             InitializeComponent();
+            DisplayOrders();
         }
 
         private void LoginPage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -35,6 +40,65 @@ namespace TransportManagement
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void DisplayOrders()
+        {
+            ordersButton.Background = Brushes.LightSkyBlue;
+            allOrdersRadioButton.IsChecked = true;
+            ordersGrid.Visibility = Visibility.Visible;
+            Refresh_Orders();
+        }
+
+        private void Refresh_Orders()
+        {
+            List<Order> orderList = new List<Order>();
+
+            if (allOrdersRadioButton.IsChecked == true)
+            {
+                // Get all orders
+                orderList = planner.FetchOrders(2);
+            }
+            else if (activeOrdersRadioButton.IsChecked == true)
+            {
+                // Get active orders
+                orderList = planner.FetchOrders(0);
+            }
+            else if (completedOrdersRadioButton.IsChecked == true)
+            {
+                // completed box is checked, fetch only completed orders
+                orderList = planner.FetchOrders(1);
+            }
+
+            OrdersList.ItemsSource = orderList;
+            // sort by OrderID
+            CollectionView viewOrder = (CollectionView)CollectionViewSource.GetDefaultView(OrdersList.ItemsSource);
+            viewOrder.SortDescriptions.Add(new SortDescription("OrderID", ListSortDirection.Ascending));
+        }
+
+        private void ordersButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void invoiceButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void allOrdersRadio_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh_Orders();
+        }
+
+        private void activeOrdersRadio_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh_Orders();
+        }
+
+        private void completedOrdersRadio_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh_Orders();
         }
     }
 }
