@@ -23,6 +23,8 @@ namespace TransportManagement
     public partial class BuyerPage : Window
     {
         Buyer buyer = new Buyer();
+        DAL dal = new DAL();
+
         public BuyerPage()
         {
             InitializeComponent();
@@ -155,7 +157,10 @@ namespace TransportManagement
             ClientsList.ItemsSource = clientList;
         }
 
-     
-        
+        private void createInvoice_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+        }
     }
 }

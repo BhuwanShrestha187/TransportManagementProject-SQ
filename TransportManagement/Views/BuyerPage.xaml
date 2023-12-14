@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportManagement"
         mc:Ignorable="d"
-       Title="AdminPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
+       Title="BuyerPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
 WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
         <Grid.RowDefinitions>
@@ -73,7 +73,7 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                 <Button x:Name="allOrdersButton" Background="WhiteSmoke" Content="All Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="72,248,497,40" Click="allOrdersButton_Click"/>
                 <Button x:Name="pendingOrdersButton" Background="WhiteSmoke" Content="Pending Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="177,248,379,40" Click="pendingOrdersButton_Click"/>
                 <Button x:Name="completedOrdersButton" Background="WhiteSmoke" Content="Completed Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="296,248,256,40" Click="completedOrdersButton_Click"/>
-                <Button x:Name="completedOrdersButton_Copy" Background="WhiteSmoke" Content="Completed Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="480,248,72,40" Click="completedOrdersButton_Click"/>
+                <Button x:Name="createInvoice" Background="WhiteSmoke" Content="Create Invoice" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="480,248,72,40" Click="createInvoice_Click"/>
             </Grid>
 
             <Grid x:Name="clientsGrid" Grid.Column="2" Visibility="Hidden" Margin="1,0,-1,0">

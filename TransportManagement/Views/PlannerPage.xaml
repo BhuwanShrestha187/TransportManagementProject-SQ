@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportManagement"
         mc:Ignorable="d"
-        Title="PlannerPage" Height="450" Width="800">
+               Title="PlannerPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
+        WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
         
     </Grid>
