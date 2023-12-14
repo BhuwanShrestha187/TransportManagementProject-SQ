@@ -78,7 +78,10 @@ namespace TransportManagement
 
         private void ordersButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ordersButton.Background = Brushes.LightSkyBlue;
+            allOrdersRadioButton.IsChecked = true;
+            ordersGrid.Visibility = Visibility.Visible;
+            Refresh_Orders();
         }
 
         private void invoiceButton_Click(object sender, RoutedEventArgs e)
