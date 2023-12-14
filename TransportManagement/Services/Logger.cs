@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * Filename: DAL.cs
+ * Project: Transport Management System
+ * Date: December 15, 2023
+ * Author: Bhuwan Shrestha, Ahmed Alemleh, Smaran Adhikari
+ * Description: It serves as a service for the role for logging purpose.
+ */
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;

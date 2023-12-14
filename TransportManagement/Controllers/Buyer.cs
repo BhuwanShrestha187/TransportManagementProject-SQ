@@ -1,4 +1,11 @@
-﻿
+﻿/*
+ * Filename: Buyer.cs
+ * Project: Transport Management System
+ * Date: December 15, 2023
+ * Author: Bhuwan Shrestha, Ahmed Alemleh, Smaran Adhikari
+ * Description: It serves as a controller for the role of Buyer.
+ */
+
 using System;
 using System.Collections.Generic;
 using TransportManagement;

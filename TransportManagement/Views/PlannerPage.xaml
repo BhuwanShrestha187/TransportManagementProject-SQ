@@ -54,7 +54,7 @@
                 <RadioButton x:Name="allOrdersRadioButton" Content="All Orders" Background="WhiteSmoke"  IsChecked="False" Click="allOrdersRadio_Click" Margin="10,259,583,31" />
                 <RadioButton x:Name="activeOrdersRadioButton" Content="Active Orders" Background="WhiteSmoke"  IsChecked="False" Click="activeOrdersRadio_Click" Margin="92,259,477,31" />
                 <RadioButton x:Name="completedOrdersRadioButton" Content="Completed Orders" Background="WhiteSmoke"  IsChecked="False" Click="completedOrdersRadio_Click" Margin="191,259,402,31" />
-                <Button x:Name="selectCarrier" Content="Select Carriers" Background="WhiteSmoke"  FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Margin="543,258,9,22" />
+                <Button x:Name="selectCarrier" Content="Select Carriers" Background="WhiteSmoke"  FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Margin="543,258,9,22" Click="selectCarrier_Click" />
 
 
             </Grid>

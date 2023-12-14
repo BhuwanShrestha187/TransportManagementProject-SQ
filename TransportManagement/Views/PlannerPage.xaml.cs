@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * Filename: PlannerPage.xaml.cs
+ * Project: Transport Management System
+ * Date: December 15, 2023
+ * Author: Bhuwan Shrestha, Ahmed Alemleh, Smaran Adhikari
+ * Description: It serves as a code-behind file for the planner role.
+ */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -109,6 +116,12 @@ namespace TransportManagement
             Order currentOrder = (Order)OrdersList.SelectedItem;
            
          
+        }
+
+        private void selectCarrier_Click(object sender, RoutedEventArgs e)
+        {
+            
+            
         }
     }
 }

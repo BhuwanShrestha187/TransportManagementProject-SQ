@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Filename: Admin.cs
+ * Project: Transport Management System
+ * Date: December 15, 2023
+ * Author: Bhuwan Shrestha, Ahmed Alemleh, Smaran Adhikari
+ * Description: It serves as a controller for the role of Admin.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
