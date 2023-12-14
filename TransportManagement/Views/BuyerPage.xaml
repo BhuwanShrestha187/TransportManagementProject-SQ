@@ -51,8 +51,8 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
 
             </Grid>
 
-            <Grid x:Name="ordersGrid" Grid.Column="2" Visibility="Hidden" Margin="1,0,-1,0">
-                <ListView x:Name="OrdersList" Margin="72,7,72,65" SelectionChanged="Selection_Changed">
+            <Grid x:Name="ordersGrid" Grid.Column="2" Visibility="Visible" Margin="1,0,-1,0">
+                <ListView x:Name="OrdersList" Margin="72,7,72,65">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding OrderID}" />
@@ -73,9 +73,10 @@ WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBru
                 <Button x:Name="allOrdersButton" Background="WhiteSmoke" Content="All Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="72,248,497,40" Click="allOrdersButton_Click"/>
                 <Button x:Name="pendingOrdersButton" Background="WhiteSmoke" Content="Pending Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="177,248,379,40" Click="pendingOrdersButton_Click"/>
                 <Button x:Name="completedOrdersButton" Background="WhiteSmoke" Content="Completed Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="296,248,256,40" Click="completedOrdersButton_Click"/>
+                <Button x:Name="completedOrdersButton_Copy" Background="WhiteSmoke" Content="Completed Orders" Height="20" FontFamily="Bahnschrift SemiCondensed" FontSize="15" Margin="480,248,72,40" Click="completedOrdersButton_Click"/>
             </Grid>
 
-            <Grid x:Name="clientsGrid" Grid.Column="2" Visibility="Visible" Margin="1,0,-1,0">
+            <Grid x:Name="clientsGrid" Grid.Column="2" Visibility="Hidden" Margin="1,0,-1,0">
                 <ListView x:Name="ClientsList" Margin="70,10,70,78">
                     <ListView.View>
                         <GridView>

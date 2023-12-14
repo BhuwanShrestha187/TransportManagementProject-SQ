@@ -151,8 +151,11 @@ namespace TransportManagement
             clientsButton.Background = Brushes.LightSkyBlue;
             clientsGrid.Visibility = Visibility.Visible;
 
-            List<Client> clientList = buyer.GetClientsFromDatabase(1);
+            List<Client> clientList = buyer.GetClientsFromDatabase(0);
             ClientsList.ItemsSource = clientList;
         }
+
+     
+        
     }
 }

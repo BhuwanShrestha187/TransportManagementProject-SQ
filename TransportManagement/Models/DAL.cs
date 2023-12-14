@@ -21,6 +21,7 @@ using System.IO.Abstractions;
 using System.Xml.Linq;
 using TransportManagement;
 using MySqlX.XDevAPI;
+using System.Runtime.Remoting;
 
 namespace TransportManagement
 {
@@ -1246,7 +1247,79 @@ namespace TransportManagement
 
 
 
+        public List<Client> GetActiveClientsFromDatabase()
+        {
+            string query = "SELECT * FROM Clients WHERE IsActive=1"; 
+            List<Client> clients= new List<Client>();
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlDataReader rdr = cmd.ExecuteReader(); 
+                    if(rdr.HasRows)
+                    {
+                        while(rdr.Read())
+                        {
+                            Client newclient = new Client
+                            {
+                                ClientName = rdr["ClientName"].ToString(),
+                                ClientID = int.Parse(rdr["ClientID"].ToString()),
+                                IsActive = int.Parse(rdr["IsActive"].ToString())
+                            };
 
+                            clients.Add(newclient);
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Log($"An error occured while fetching active clients. {ex.Message}", LogLevel.Error);
+            }
+            
+            return clients;
+        }
+
+
+        // Get All clients
+        public List<Client> GetClientsFromDatabase()
+        {
+            string query = "SELECT * FROM Clients";
+            List<Client> clients = new List<Client>();
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionString()))
+                {
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand(query, conn);
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Client newclient = new Client
+                            {
+                                ClientName = rdr["ClientName"].ToString(),
+                                ClientID = int.Parse(rdr["ClientID"].ToString()),
+                                IsActive = int.Parse(rdr["IsActive"].ToString())
+                            };
+
+                            clients.Add(newclient);
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Log($"An error occured while fetching active clients. {ex.Message}", LogLevel.Error);
+            }
+
+            return clients;
+        }
 
 
 
