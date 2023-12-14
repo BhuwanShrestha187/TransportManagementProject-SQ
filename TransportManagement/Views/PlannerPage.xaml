@@ -8,6 +8,58 @@
                Title="PlannerPage" Height="450" Width="800" Background="Azure" ResizeMode="NoResize" 
         WindowStyle="None" MouseDown="LoginPage_MouseDown" BorderThickness="1" BorderBrush="Black">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel VerticalAlignment="Top" Grid.Row="0" >
+            <Image Source="..\fullbanner.jpg" Height="145" Width="879"/>
+            <Button x:Name="closeButton" Content="X" Foreground="White" VerticalAlignment="Top" Width="30" Margin="770 -148 0 0" BorderThickness="0" Background="Black" FontSize="17" FontWeight="Bold" Click="closeButton_Click"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1" Background="Black"></StackPanel>
+            <StackPanel Grid.Column="2"/>
+
+            <StackPanel Grid.Column="0">
+                <Button x:Name="ordersButton" Background="WhiteSmoke" Content="Orders" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="ordersButton_Click" />
+                <Button x:Name="invoiceButton" Background="WhiteSmoke" Content="All Invoices" Height="45" FontSize="16" BorderThickness="1" FontWeight="Bold"  FontFamily="Bahnschrift SemiCondensed" Width="128" Click="invoiceButton_Click" />
+
+            </StackPanel>
+            <Grid x:Name="ordersGrid" Grid.Column="3" Visibility="Visible">
+                <Label Content="Orders List" HorizontalAlignment="Center" Margin="0,-6,0,292" Width="672" Background="SkyBlue" FontWeight="Bold" />
+                <ListView x:Name="OrdersList" Margin="0,22,0,54" SelectionMode="Single">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" Width="30" DisplayMemberBinding="{Binding OrderID}" />
+                            <GridViewColumn Header="Client Name" Width="75" DisplayMemberBinding="{Binding ClientName}" />
+                            <GridViewColumn Header="Origin" Width="70" DisplayMemberBinding="{Binding Origin}" />
+                            <GridViewColumn Header="Destination" Width="80" DisplayMemberBinding="{Binding Destination}" />
+                            <GridViewColumn Header="Job Type" Width="60" DisplayMemberBinding="{Binding JobType}" />
+                            <GridViewColumn Header="Van Type" Width="60" DisplayMemberBinding="{Binding VanType}" />
+                            <GridViewColumn Header="Qty" Width="40" DisplayMemberBinding="{Binding Quantity}" />
+                            <GridViewColumn Header="Status" Width="70" DisplayMemberBinding="{Binding IsCompleted}" />
+                            <GridViewColumn Header="Creation Date" Width="90" DisplayMemberBinding="{Binding DateConverter}" />
+                            <GridViewColumn Header="Completed Date" Width="95" DisplayMemberBinding="{Binding DateConverter}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <RadioButton x:Name="allOrdersRadioButton" Content="All Orders" Background="WhiteSmoke"  IsChecked="False" Click="allOrdersRadio_Click" Margin="10,259,583,31" />
+                <RadioButton x:Name="activeOrdersRadioButton" Content="Active Orders" Background="WhiteSmoke"  IsChecked="False" Click="activeOrdersRadio_Click" Margin="92,259,477,31" />
+                <RadioButton x:Name="completedOrdersRadioButton" Content="Completed Orders" Background="WhiteSmoke"  IsChecked="False" Click="completedOrdersRadio_Click" Margin="191,259,402,31" />
+
+
+            </Grid>
+
+            
+            
+        </Grid>
     </Grid>
 </Window>
