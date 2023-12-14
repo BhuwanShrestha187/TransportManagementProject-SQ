@@ -970,10 +970,10 @@ namespace TransportManagement
         }
 
 
-        public Client GetClientByName(string clientName)
+        public Client FilterClientByName(string name)
         {
-            Client client = null;
             string sql = "SELECT ClientID, ClientName FROM Clients WHERE ClientName=@ClientName";
+            Client client = null;
 
             try
             {
@@ -984,7 +984,7 @@ namespace TransportManagement
                     using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                     {
                         // Populate all arguments in the insert
-                        cmd.Parameters.AddWithValue("@ClientName", clientName) ;
+                        cmd.Parameters.AddWithValue("@ClientName", name);
 
                         MySqlDataReader rdr = cmd.ExecuteReader();
 
@@ -1005,22 +1005,24 @@ namespace TransportManagement
             catch (Exception e)
             {
                 Logger.Log(e.Message, LogLevel.Error);
+                throw new ArgumentException($"Unable to filter the clients by name. {e.Message}");
             }
 
             return client;
         }
 
-        
-       public void SaveOrderToDatabase(Order order)
+
+
+        public void CreateOrder(Order order)
         {
-            string sql = "INSERT INTO Orders (ClientID, ClientName, Origin, Destination, JobType, Quantity, VanType, OrderCreationDate) " +
-                "VALUES (@ClientID, @ClientName, @Origin, @Destination, @JobType, @Quantity, @VanType, @OrderCreationDate)";
+            string sql = "INSERT INTO Orders (ClientID, Origin, Destination, JobType, Quantity, VanType, OrderCreationDate) " +
+                "VALUES (@ClientID, @Origin, @Destination, @JobType, @Quantity, @VanType, @OrderCreationDate)";
 
             try
             {
                 // Get the client from the database and raise an error if it doesn't exist
                 Client client;
-                if ((client = GetClientByName(order.ClientName)) == null)
+                if ((client = FilterClientByName(order.ClientName)) == null)
                 {
                     throw new KeyNotFoundException($"Client {order.ClientName} does not exist in the database.");
                 }
@@ -1035,7 +1037,6 @@ namespace TransportManagement
 
                         // Populate all arguments in the insert
                         cmd.Parameters.AddWithValue("@ClientID", client.ClientID);
-                        cmd.Parameters.AddWithValue("@ClientName", client.ClientName);
                         cmd.Parameters.AddWithValue("@Origin", order.Origin.ToString());
                         cmd.Parameters.AddWithValue("@Destination", order.Destination.ToString());
                         cmd.Parameters.AddWithValue("@JobType", order.JobType);
@@ -1068,13 +1069,12 @@ namespace TransportManagement
 
 
 
-
         public List<Order> GetAllOrders()
         {
             List<Order> orders = new List<Order>();
             try
             {
-                string conString = ToString();
+              
                 using (MySqlConnection con = new MySqlConnection(ConnectionString()))
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM Orders" +
@@ -1092,26 +1092,31 @@ namespace TransportManagement
                                 OrderID = int.Parse(rdr["OrderID"].ToString()),
                                 ClientName = rdr["ClientName"].ToString()
                             };
-                            if (DateTime.TryParse(rdr["OrderDate"].ToString(), out DateTime dt))
+                        
+
+                            newOrder.Origin = (City)Enum.Parse(typeof(City), rdr["Origin"].ToString(), true);                      
+                            newOrder.Destination = (City)Enum.Parse(typeof(City), rdr["Destination"].ToString(), true);
+                            if (int.TryParse(rdr["JobType"].ToString(), out int jobType))
                             {
-                                newOrder.OrderCreationDate = dt;
+                                newOrder.JobType = (JobType)jobType;
                             }
 
-                            newOrder.Origin = (City)Enum.Parse(typeof(City), rdr["Origin"].ToString(), true);
-                            newOrder.Destination = (City)Enum.Parse(typeof(City), rdr["Destination"].ToString(), true);
-                            newOrder.JobType = (JobType)int.Parse(rdr["JobType"].ToString());
                             newOrder.VanType = (VanType)int.Parse(rdr["VanType"].ToString());
+
                             newOrder.Quantity = int.Parse(rdr["Quantity"].ToString());
+
                             newOrder.IsCompleted = int.Parse(rdr["IsCompleted"].ToString());
+
                             if (DateTime.TryParse(rdr["OrderCreationDate"].ToString(), out DateTime dt2))
                             {
                                 newOrder.OrderAcceptedDate = dt2;
                             }
 
-                            if (DateTime.TryParse(rdr["OrderCompletedDate"].ToString(), out DateTime dt3))
+                            if (rdr["OrderCompletedDate"] != DBNull.Value && DateTime.TryParse(rdr["OrderCompletedDate"].ToString(), out DateTime dt3))
                             {
                                 newOrder.OrderCompletionDate = dt3;
                             }
+
 
                             orders.Add(newOrder);
                         }
@@ -1120,20 +1125,22 @@ namespace TransportManagement
             }
             catch (Exception e)
             {
-                Logger.Log(e.Message, LogLevel.Error);
+                Logger.Log($"Error in GetALlOrders: {e.Message}", LogLevel.Error);
                 throw new ArgumentException($"Unable to fetch all orders. {e.Message}");
             }
 
             return orders;
         }
 
-        public List<Order> GetAllActiveOrders()
-    {
+        public List<Order> GetActiveOrders()
+        {
             List<Order> orders = new List<Order>();
             try
             {
-                 using (MySqlConnection con = new MySqlConnection(ConnectionString()))
+               
+                using (MySqlConnection con = new MySqlConnection(ConnectionString()))
                 {
+                    Logger.Log("\n*************************Pending Orders Started Here***********************", LogLevel.Information);
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM Orders " +
                          "INNER JOIN Clients ON Orders.ClientID = Clients.ClientID WHERE IsCompleted=0", con);
                     con.Open();
@@ -1148,10 +1155,7 @@ namespace TransportManagement
                                 OrderID = int.Parse(rdr["OrderID"].ToString()),
                                 ClientName = rdr["ClientName"].ToString()
                             };
-                            if (DateTime.TryParse(rdr["OrderDate"].ToString(), out DateTime dt))
-                            {
-                                newOrder.OrderCreationDate = dt;
-                            }
+                           
 
                             newOrder.Origin = (City)Enum.Parse(typeof(City), rdr["Origin"].ToString(), true);
                             newOrder.Destination = (City)Enum.Parse(typeof(City), rdr["Destination"].ToString(), true);
@@ -1182,6 +1186,7 @@ namespace TransportManagement
 
             return orders;
         }
+
 
         public List<Order> GetCompletedOrders()
         {

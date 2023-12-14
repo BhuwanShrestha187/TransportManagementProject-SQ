@@ -58,7 +58,7 @@ namespace TransportManagement
             marketPlaceGrid.Visibility = Visibility.Visible;
             marketPlaceButton.Background = Brushes.LightSkyBlue;
             List<Contract> contracts = new List<Contract>();
-            contracts = buyer.GetContractsFromMarketPlaceDatabase();
+            contracts = buyer.FetchContracts();
             ContractsList.ItemsSource = contracts;
 
         }
@@ -97,28 +97,44 @@ namespace TransportManagement
             ordersGrid.Visibility = Visibility.Visible; 
             ordersButton.Background = Brushes.LightSkyBlue;
             allOrdersButton.Background = Brushes.LightSkyBlue;
+            ViewOrders(); 
         }
 
         private void ViewOrders()
         {
             List<Order> orders = new List<Order>();
-            //orders = buyer.GetOrders("All");
-            
+            orders = buyer.GetOrders(2);
+            OrdersList.ItemsSource = orders;
+
         }
 
         private void allOrdersButton_Click(object sender, RoutedEventArgs e)
         {
+            allOrdersButton.Background = Brushes.LightSkyBlue;
+            pendingOrdersButton.Background = Brushes.WhiteSmoke;
+            completedOrdersButton.Background= Brushes.WhiteSmoke;
+            ViewOrders();
             
         }
 
         private void pendingOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-
+            pendingOrdersButton.Background = Brushes.LightSkyBlue;
+            allOrdersButton.Background = Brushes.WhiteSmoke;
+            completedOrdersButton.Background = Brushes.WhiteSmoke;
+            List<Order> orderList = new List<Order>();
+            orderList = buyer.GetOrders(0);
+            OrdersList.ItemsSource = orderList;
         }
 
         private void completedOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-
+            pendingOrdersButton.Background = Brushes.WhiteSmoke;
+            allOrdersButton.Background = Brushes.WhiteSmoke;
+            allOrdersButton.Background = Brushes.LightSkyBlue;
+            List<Order> orderList = new List<Order>();
+            orderList = buyer.GetOrders(1);
+            OrdersList.ItemsSource = orderList;
         }
 
         private void generateOrdersButton_Click(object sender, RoutedEventArgs e)
