@@ -1,0 +1,14 @@
+﻿<Window x:Class="Transportation_Management_System.CarrierSelection"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Transportation_Management_System"
+        mc:Ignorable="d"
+         WindowStartupLocation="CenterScreen" Title="Carrier Selection" Height="400" Width="420">
+    <Grid>
+        <ListView x:Name="CarrierList" ></ListView>
+        <Label x:Name="OrderQuantity" Margin="32,307,162,18" RenderTransformOrigin="0.354,0.786" ></Label>
+        <Button x:Name="SelectCarrier" Content="Select Carrier" Margin="282,312,22,28" Background="WhiteSmoke" Foreground="DarkBlue" FontSize="16" FontFamily="Bahnschrift SemiCondensed" Click="SelectCarrier_Click" />
+    </Grid>
+</Window>

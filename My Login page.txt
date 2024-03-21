@@ -1,0 +1,29 @@
+private void ProcessBackup_Click(object sender, RoutedEventArgs e)
+{
+    // Get the current path for processing the backup
+    string backupPath = BackupPath.Text;
+
+    try
+    {
+        // Process the backup
+        admin.Backup(backupPath);
+        System.Windows.MessageBox.Show("The backup was succesfully processed!", "Backup Processed", MessageBoxButton.OK, MessageBoxImage.Information);
+        BackupDate.Content = DateTime.Now.ToString("MM-dd-yyyy HH:mm");
+
+        Logger.Log($"New backup file successfully created at {backupPath}.", LogLevel.Information);
+    }
+    // If not successful, inform the user
+    catch (ArgumentNullException)
+    {
+        System.Windows.MessageBox.Show("Please check the Backup path and try again", "Backup Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+    catch (Exception)
+    {
+        System.Windows.MessageBox.Show("Backup was not processed. Please try again.", "Backup Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+}
+
+public void Backup(string backUpFilePath)
+{
+    db.BackupDatabase(backUpFilePath);
+}
